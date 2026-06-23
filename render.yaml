@@ -1,0 +1,26 @@
+services:
+  # Server service
+  - type: web
+    name: my-portfolio-server
+    runtime: image
+    repo: https://github.com/Manoj-Sunar/My-Portfolio
+    plan: free
+    dockerContext: .
+    dockerfilePath: ./server/Dockerfile  # Adjust if your Dockerfile is in server folder
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+
+  # Client service
+  - type: web
+    name: my-portfolio-client
+    runtime: image
+    repo: https://github.com/Manoj-Sunar/My-Portfolio
+    plan: free
+    dockerContext: .
+    dockerfilePath: ./client/Dockerfile  # Adjust if your Dockerfile is in client folder
+    envVars:
+      - key: REACT_APP_API_URL
+        value: https://my-portfolio-server.onrender.com
