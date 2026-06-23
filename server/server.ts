@@ -69,20 +69,20 @@ async function bootstrap() {
   // 4. Mount Consolidated API Router
   app.use('/api', apiRouter);
 
-  // General health check
-  app.get('/api/health', (req, res) => {
-    const db = loadDB();
-    res.json({ 
-      status: 'healthy', 
-      timestamp: new Date().toISOString(),
-      dataCounts: {
-        projects: db.projects?.length || 0,
-        education: db.education?.length || 0,
-        certificates: db.certificates?.length || 0
-      }
-    });
+app.get('/api/health', (req, res) => {
+  res.status(200).json({
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    memory: process.memoryUsage(),
+    version: process.env.npm_package_version || '1.0.0'
   });
+});
 
+// Simple health check for Docker
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
 
 
 

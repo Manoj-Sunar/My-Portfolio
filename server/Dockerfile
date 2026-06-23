@@ -18,8 +18,8 @@ RUN npm run build
 # Stage 2: Clean and minimal production runtime environment
 FROM node:20-alpine AS runner
 
-# Install curl for health checks
-RUN apk add --no-cache curl
+# Install curl for health checks (optional - using node for health check instead)
+# RUN apk add --no-cache curl
 
 WORKDIR /app
 
