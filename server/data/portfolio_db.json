@@ -1,0 +1,532 @@
+{
+  "admin": {
+    "name": "Manoj Sunar",
+    "email": "kumar980062begin@gmail.com",
+    "passwordHash": "$2b$10$/frm0QNqDBdhpqTbKrq/nerEaMLNC07c6M4uAgstSE8KFExpnizDW",
+    "resetPasswordToken": null,
+    "resetPasswordExpire": null,
+    "resetPasswordOTP": null,
+    "resetPasswordOTPExpires": null,
+    "title": "MERN Developer || Full Stack Developer || CI/CD",
+    "bio": "I am a MERN stack web developer with 4 months of experience. Completed a 3-month internship at Lumino Technology and 1 months of remote work at Elaric. Skilled in web development, databases, and teamwork.",
+    "profileImage": {
+      "url": "https://res.cloudinary.com/manojadmin/image/upload/v1781867970/portfolio/culaz9tisocvrput1ubl.png",
+      "publicId": "portfolio/culaz9tisocvrput1ubl"
+    },
+    "socialLinks": {
+      "github": "https://github.com/Manoj-Sunar",
+      "linkedin": "https://www.linkedin.com/in/manoj-kami-534357373",
+      "twitter": "",
+      "instagram": ""
+    }
+  },
+  "projects": [
+    {
+      "id": "p1",
+      "title": "Lumino Finance App",
+      "description": "Developed Lumino Finance App as a full stack developer, working on both frontend and backend features dynamically.",
+      "image": {
+        "url": "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&q=80&w=600",
+        "publicId": "local_finance_app"
+      },
+      "technologies": [
+        "React.js",
+        "Node.js",
+        "Express.js",
+        "MongoDB",
+        "Tailwind CSS"
+      ],
+      "liveUrl": "https://github.com/Manoj-Sunar",
+      "githubUrl": "https://github.com/Manoj-Sunar",
+      "category": "Web Applications",
+      "featured": true,
+      "order": 1
+    },
+    {
+      "id": "p2",
+      "title": "Chamling Tour and Travel",
+      "description": "Created Chamling Tour and Travel website with responsive UI and user-friendly design (frontend only).",
+      "image": {
+        "url": "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&q=80&w=600",
+        "publicId": "local_tour_travel"
+      },
+      "technologies": [
+        "React.js",
+        "Vite",
+        "Tailwind CSS"
+      ],
+      "liveUrl": "https://github.com/Manoj-Sunar",
+      "githubUrl": "https://github.com/Manoj-Sunar",
+      "category": "Web Applications",
+      "featured": true,
+      "order": 3
+    },
+    {
+      "id": "p3",
+      "title": "Elaric AI Coding Platform",
+      "description": "Worked on the Elaric AI Coding Platform, contributing to frontend and backend features using the MERN stack.",
+      "image": {
+        "url": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=600",
+        "publicId": "local_elaric_platform"
+      },
+      "technologies": [
+        "React.js",
+        "Node.js",
+        "Express.js",
+        "MongoDB",
+        "AI"
+      ],
+      "liveUrl": "https://github.com/Manoj-Sunar",
+      "githubUrl": "https://github.com/Manoj-Sunar",
+      "category": "AI & Automation",
+      "featured": true,
+      "order": 2
+    },
+    {
+      "id": "p4",
+      "title": "Geck Gears eCommerce",
+      "description": "Worked on Geck Gears eCommerce (frontend only), building responsive product pages and layout specifications.",
+      "image": {
+        "url": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=600",
+        "publicId": "local_geck_gears"
+      },
+      "technologies": [
+        "React js",
+        "Vite",
+        "Tailwind CSS"
+      ],
+      "liveUrl": "https://github.com/Manoj-Sunar",
+      "githubUrl": "https://github.com/Manoj-Sunar",
+      "category": "E-commerce",
+      "featured": false,
+      "order": 4
+    },
+    {
+      "id": "p5",
+      "title": "Kinmel eCommerce website",
+      "description": "Developed Kinmel eCommerce website (frontend only) with clean UI and smooth user experience.",
+      "image": {
+        "url": "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&q=80&w=600",
+        "publicId": "local_kinmel_ec"
+      },
+      "technologies": [
+        "React js",
+        "Bootstrap",
+        "CSS"
+      ],
+      "liveUrl": "https://github.com/Manoj-Sunar",
+      "githubUrl": "https://github.com/Manoj-Sunar",
+      "category": "E-commerce",
+      "featured": false,
+      "order": 5
+    },
+    {
+      "id": "p6",
+      "title": "Blogging Site",
+      "description": "A personal blogging platform supporting rich text blogging, category classification, search filters, and comments system.",
+      "image": {
+        "url": "https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&q=80&w=600",
+        "publicId": "local_blog_site"
+      },
+      "technologies": [
+        "Node JS/Express js",
+        "MongoDB",
+        "Bootstrap",
+        "EJS"
+      ],
+      "liveUrl": "https://github.com/Manoj-Sunar",
+      "githubUrl": "https://github.com/Manoj-Sunar",
+      "category": "Web Applications",
+      "featured": false,
+      "order": 6
+    },
+    {
+      "id": "p7",
+      "title": "Inventory Management System",
+      "description": "A detailed inventory ledger tracking real-time stock levels, store orders, shipping checklists, and supplier contacts.",
+      "image": {
+        "url": "https://images.unsplash.com/photo-1507925921958-8a62f3d1a50d?auto=format&fit=crop&q=80&w=600",
+        "publicId": "local_inventory_system"
+      },
+      "technologies": [
+        "React js",
+        "Node.js",
+        "MongoDB",
+        "Tailwind CSS"
+      ],
+      "liveUrl": "https://github.com/Manoj-Sunar",
+      "githubUrl": "https://github.com/Manoj-Sunar",
+      "category": "Web Applications",
+      "featured": false,
+      "order": 7
+    },
+    {
+      "id": "p8",
+      "title": "Footsal Booking System",
+      "description": "An interactive sports arena booking application with real-time calendar reservations and payment gateway endpoints.",
+      "image": {
+        "url": "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&q=80&w=600",
+        "publicId": "local_footsal_booking"
+      },
+      "technologies": [
+        "React.js",
+        "Express.js",
+        "MongoDB",
+        "Tailwind CSS"
+      ],
+      "liveUrl": "https://github.com/Manoj-Sunar",
+      "githubUrl": "https://github.com/Manoj-Sunar",
+      "category": "Web Applications",
+      "featured": false,
+      "order": 8
+    },
+    {
+      "id": "1781867911718",
+      "title": "Church Website ( Headless CMS or a Decoupled CMS )",
+      "description": "Light to the Nations Emanuel Church Platform is a state-of-the-art, fully dynamic web application built to serve as the digital sanctuary for a vibrant faith community. This comprehensive platform empowers church leadership with complete content control while delivering an inspiring, SEO-optimized experience for visitors seeking spiritual growth, community connection, and online giving opportunities.",
+      "image": {
+        "url": "https://res.cloudinary.com/manojadmin/image/upload/v1781867932/portfolio/qbz2j2s2lyhbwibpzjua.jpg",
+        "publicId": "portfolio/qbz2j2s2lyhbwibpzjua"
+      },
+      "technologies": [],
+      "liveUrl": "",
+      "githubUrl": "https://github.com/Manoj-Sunar/church-web",
+      "category": "Web Applications",
+      "featured": false,
+      "order": 9
+    }
+  ],
+  "education": [
+    {
+      "id": "e1",
+      "institution": "Trivubhan University",
+      "degree": "Bachelor in CSIT",
+      "field": "Computer Science and Information Technology",
+      "startDate": "2021-01-01",
+      "endDate": "2025-12-31",
+      "isCurrent": false,
+      "description": "Acquired core competencies in software development lifecycle, web applications, database normalization, algorithms, and computational intelligence.",
+      "grade": "63%",
+      "order": 1
+    }
+  ],
+  "certificates": [
+    {
+      "id": "cert_1782058740689",
+      "title": "B.Sc CSIT Marksheet",
+      "issuer": "Tribhuvan University",
+      "issueDate": "2020-05-20",
+      "expiryDate": "",
+      "credentialId": "",
+      "credentialUrl": "",
+      "image": {
+        "url": "https://res.cloudinary.com/manojadmin/image/upload/v1782058370/portfolio/telux5rohbl1qqd82fyu.jpg",
+        "publicId": "portfolio/telux5rohbl1qqd82fyu"
+      },
+      "order": 1
+    },
+    {
+      "id": "cert_1782116123634",
+      "title": "B.Sc CSIT Marksheet",
+      "issuer": "Tribhuvan University",
+      "issueDate": "2020-05-07",
+      "expiryDate": "",
+      "credentialId": "",
+      "credentialUrl": "",
+      "image": {
+        "url": "https://res.cloudinary.com/manojadmin/image/upload/v1782116028/portfolio/v65texkkhf63kltkjh9m.jpg",
+        "publicId": "portfolio/v65texkkhf63kltkjh9m"
+      },
+      "order": 2
+    },
+    {
+      "id": "cert_1782116283283",
+      "title": "Internship Completion",
+      "issuer": "Lumino Technology Pvt. Ltd.",
+      "issueDate": "2025-03-27",
+      "expiryDate": "",
+      "credentialId": "",
+      "credentialUrl": "",
+      "image": {
+        "url": "https://res.cloudinary.com/manojadmin/image/upload/v1782116145/portfolio/brx6glbdu1uiqndxbkij.jpg",
+        "publicId": "portfolio/brx6glbdu1uiqndxbkij"
+      },
+      "order": 3
+    },
+    {
+      "id": "cert_1782116432855",
+      "title": "Frontend Web Development Workshop",
+      "issuer": "MacIT Hub",
+      "issueDate": "2022-10-22",
+      "expiryDate": "",
+      "credentialId": "",
+      "credentialUrl": "",
+      "image": {
+        "url": "https://res.cloudinary.com/manojadmin/image/upload/v1782116306/portfolio/t2msfojarm2q4kaeutkd.jpg",
+        "publicId": "portfolio/t2msfojarm2q4kaeutkd"
+      },
+      "order": 4
+    }
+  ],
+  "about": {
+    "title": "Hi, I am Manoj Sunar",
+    "content": "I build web applications that don't just work they empower. As a MERN Stack Developer, I specialize in creating content manageable platforms with intuitive admin panels, secure authentication, and optimized performance. From financial apps to AI platforms, I've delivered production-ready solutions in every project I've touched. My latest creation? A complete church management system where non-technical staff can manage sermons, events, and ministries effortlessly. I believe technology should serve people, not complicate their lives.",
+    "image": {
+      "url": "https://res.cloudinary.com/manojadmin/image/upload/v1781867118/portfolio/h7rpg5nrhjiv4ktoyyul.png",
+      "publicId": "portfolio/h7rpg5nrhjiv4ktoyyul"
+    },
+    "skills": [
+      {
+        "name": "React js",
+        "level": 85,
+        "icon": "Code"
+      },
+      {
+        "name": "Node JS/Express js",
+        "level": 85,
+        "icon": "Server"
+      },
+      {
+        "name": "MongoDB",
+        "level": 75,
+        "icon": "Database"
+      },
+      {
+        "name": "Next js",
+        "level": 85,
+        "icon": "Code"
+      },
+      {
+        "name": "Tailwind CSS",
+        "level": 95,
+        "icon": "Palette"
+      },
+      {
+        "name": "Docker",
+        "level": 30,
+        "icon": "Code"
+      },
+      {
+        "name": "Nest JS",
+        "level": 85,
+        "icon": "Code"
+      },
+      {
+        "name": "MySQL",
+        "level": 50,
+        "icon": "Database"
+      },
+      {
+        "name": "Supabase",
+        "level": 40,
+        "icon": "Database"
+      },
+      {
+        "name": "PostGresSQL",
+        "level": 60,
+        "icon": "Database"
+      }
+    ],
+    "achievements": []
+  },
+  "cv": {
+    "personalInfo": {
+      "name": "MANOJ SUNAR",
+      "email": "kumar980062begin@gmail.com",
+      "phone": "9764617689",
+      "address": "Pokhara / Kathmandau, Nepal",
+      "website": "https://github.com/Manoj-Sunar",
+      "title": "MERN Developer || Full Stack AI Developer",
+      "summary": "I build web applications that don't just work they empower. As a MERN Stack Developer, I specialize in creating content manageable platforms with intuitive admin panels, secure authentication, and optimized performance. From financial apps to AI platforms, I've delivered production-ready solutions in every project I've touched. My latest creation? A complete church management system where non-technical staff can manage sermons, events, and ministries effortlessly. I believe technology should serve people, not complicate their lives."
+    },
+    "sections": [
+      {
+        "id": "cv_s1",
+        "title": "Work Experience",
+        "content": "",
+        "items": [
+          {
+            "title": "Full Stack Developer Intern",
+            "subtitle": "Lumino Technology pvt. ltd",
+            "date": "27 march 2025 - 5 june 2025 ( for academic only )",
+            "description": "• Developed Lumino Finance App as a full stack developer, working on both frontend and backend features.\n• Created Chamling Tour and Travel website with responsive UI and user-friendly design (frontend only).\n• Worked on Geck Gears eCommerce (frontend only), building product pages and layouts.\n• Developed Kinmel eCommerce website (frontend only) with clean UI and smooth user experience.",
+            "skills": "React.js, Node.js, Express.js, MongoDB, Tailwind CSS, Bootstrap",
+            "githubUrl": "",
+            "websiteUrl": "",
+            "highlights": ""
+          },
+          {
+            "title": "MERN STACK DEVELOPER (REMOTE)",
+            "subtitle": "ELARIC",
+            "date": "sep 2025",
+            "description": "Works on the Elaric AI Coding Platform, contributing to frontend and backend features using the MERN stack",
+            "skills": "MERN Stack, Express.js, React.js, Node.js, Next.js",
+            "githubUrl": "",
+            "websiteUrl": "",
+            "highlights": ""
+          }
+        ]
+      },
+      {
+        "id": "cv_s2",
+        "title": "Academic Profile",
+        "content": "",
+        "items": [
+          {
+            "title": "Bachelor in CSIT",
+            "subtitle": "University",
+            "date": "2021 - 2025",
+            "description": "Specialization in software engineering, database systems, web programming, and computational methodologies.",
+            "skills": "Data Structures, DBMS, Web Development, Software Engineering",
+            "githubUrl": "",
+            "websiteUrl": "",
+            "highlights": ""
+          }
+        ]
+      },
+      {
+        "id": "cv_s3",
+        "title": "Highlighted Projects",
+        "content": "",
+        "items": [
+          {
+            "title": "Blogging Site",
+            "subtitle": "Personal Project",
+            "date": "2025",
+            "description": "Designed a fully responsive blogging site with category tags, custom search filters, and an administrative dashboard.",
+            "skills": "Node.js, Express, MongoDB, Bootstrap, EJS",
+            "githubUrl": "",
+            "websiteUrl": "",
+            "highlights": ""
+          },
+          {
+            "title": "Inventory Management System",
+            "subtitle": "Institutional Project",
+            "date": "2025",
+            "description": "Built a multi-tiered management platform designed to track store assets, export audit reports, and send low-stock automated updates.",
+            "skills": "React.js, Node.js, MongoDB, Tailwind CSS",
+            "githubUrl": "",
+            "websiteUrl": "",
+            "highlights": ""
+          },
+          {
+            "title": "Church Website ( Headless CMS or a Decoupled CMS )",
+            "subtitle": "Local People/Clients",
+            "date": "2026-03-17 to 2026-04-30",
+            "description": "Light to the Nations Emanuel Church Platform is a state-of-the-art, fully dynamic web application built to serve as the digital sanctuary for a vibrant faith community. This comprehensive platform empowers church leadership with complete content control while delivering an inspiring, SEO-optimized experience for visitors seeking spiritual growth, community connection, and online giving opportunities.",
+            "skills": "Next JS, Nest JS, javascript, typescript, Mongodb Atlas, Redis for caching, react query for server state management, tailwind css, Docker",
+            "githubUrl": "",
+            "websiteUrl": "",
+            "highlights": ""
+          }
+        ]
+      }
+    ],
+    "skills": [
+      {
+        "id": "",
+        "category": "Frontend",
+        "items": [
+          "html",
+          "Javascript",
+          "typescript",
+          "tailwind css",
+          "React js",
+          "Next js",
+          "Bootstrap"
+        ]
+      },
+      {
+        "id": "2",
+        "category": "Backend",
+        "items": [
+          "Node JS/Express js",
+          "Nest JS",
+          "Rest API",
+          "GraphQL",
+          "JWT Authentication",
+          "Clerk Authentication"
+        ]
+      },
+      {
+        "id": "",
+        "category": "Devops & Tools (basic)",
+        "items": [
+          "Docker",
+          "git",
+          "github",
+          "Render"
+        ]
+      },
+      {
+        "id": "4",
+        "category": "Databases",
+        "items": [
+          "MONGODB",
+          "PostGressql (Basic)",
+          "Supabase (Basic)",
+          "MySql (Basic)"
+        ]
+      },
+      {
+        "id": "",
+        "category": "Caching",
+        "items": [
+          "Redis",
+          "Redis Docker"
+        ]
+      }
+    ],
+    "languages": [
+      {
+        "id": "l1",
+        "name": "Nepali",
+        "level": "Native / Bilingual"
+      },
+      {
+        "id": "",
+        "name": "English",
+        "level": "Basic / Conversational"
+      },
+      {
+        "id": "",
+        "name": "Hindi",
+        "level": "Basic / Conversational"
+      }
+    ],
+    "references": [],
+    "template": "modern"
+  },
+  "recentActivity": [
+    "[22/06/2026, 18:45:53] Deleted project: \"QR Based Food Order\"",
+    "[22/06/2026, 18:45:27] Created project: \"QR Based Food Order\"",
+    "[22/06/2026, 18:44:23] Admin logged in successfully: Manoj Sunar",
+    "[6/22/2026, 8:20:56 AM] Updated certificate record: \"Internship Completion\"",
+    "[6/22/2026, 8:20:45 AM] Updated certificate record: \"Frontend Web Development Workshop\"",
+    "[6/22/2026, 8:20:32 AM] Uploaded/created certificate: \"Frontend Web Development Workshop\" (issued by MacIT Hub)",
+    "[6/22/2026, 8:18:03 AM] Uploaded/created certificate: \"Internship Completion\" (issued by Lumino Technology Pvt. Ltd.)",
+    "[6/22/2026, 8:15:23 AM] Uploaded/created certificate: \"B.Sc CSIT Marksheet\" (issued by Tribhuvan University)",
+    "[6/21/2026, 4:19:00 PM] Uploaded/created certificate: \"B.Sc CSIT Marksheet\" (issued by Tribhuvan University)",
+    "[6/19/2026, 4:41:37 PM] CV content and styling template updated.",
+    "[6/19/2026, 4:41:21 PM] CV content and styling template updated.",
+    "[6/19/2026, 4:34:47 PM] CV content and styling template updated.",
+    "[6/19/2026, 4:26:40 PM] Portfolio projects display list reordered.",
+    "[6/19/2026, 4:26:39 PM] Portfolio projects display list reordered.",
+    "[6/19/2026, 3:37:44 PM] CV content and styling template updated.",
+    "[6/19/2026, 3:37:39 PM] CV content and styling template updated.",
+    "[6/19/2026, 3:37:10 PM] CV content and styling template updated.",
+    "[6/19/2026, 3:36:45 PM] CV content and styling template updated.",
+    "[6/19/2026, 3:36:39 PM] CV content and styling template updated.",
+    "[6/19/2026, 3:32:28 PM] CV content and styling template updated.",
+    "[6/19/2026, 3:32:27 PM] CV content and styling template updated.",
+    "[6/19/2026, 3:32:26 PM] CV content and styling template updated.",
+    "[6/19/2026, 3:32:24 PM] CV content and styling template updated.",
+    "[6/19/2026, 3:32:23 PM] CV content and styling template updated.",
+    "[6/19/2026, 3:32:21 PM] CV content and styling template updated.",
+    "[6/19/2026, 3:32:06 PM] CV content and styling template updated.",
+    "[6/19/2026, 3:24:32 PM] CV content and styling template updated.",
+    "[6/19/2026, 3:22:59 PM] CV content and styling template updated.",
+    "[6/19/2026, 2:25:58 PM] CV content and styling template updated.",
+    "[6/19/2026, 2:21:21 PM] About sections and technical skills updated."
+  ]
+}
