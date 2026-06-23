@@ -18,18 +18,23 @@ RUN npm run build
 # Stage 2: Clean and minimal production runtime environment
 FROM node:20-alpine AS runner
 
+# Install curl for health checks
+RUN apk add --no-cache curl
+
 WORKDIR /app
 
 # Set production environment flags
 ENV NODE_ENV=production
 ENV PORT=5000
 
-# Copy compiled assets from builder
-COPY --from=builder /app/dist ./dist
+# Copy package files first for better caching
 COPY --from=builder /app/package*.json ./
 
 # Install production-only dependencies
-RUN npm ci --only=production
+RUN npm ci --omit=dev
+
+# Copy compiled assets from builder
+COPY --from=builder /app/dist ./dist
 
 # Set up local directories for persistent fallbacks or logs
 RUN mkdir -p public/uploads
