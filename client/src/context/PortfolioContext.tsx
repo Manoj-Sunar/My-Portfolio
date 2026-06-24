@@ -226,7 +226,7 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const updateCVMutation = useMutation({
     mutationFn: async (data: Partial<CVType>) => {
-      const res = await api.put('/cv', data);
+      const res = await api.patch('/cv', data);
       return res.data;
     },
     onSuccess: () => {
