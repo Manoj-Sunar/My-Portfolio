@@ -1,24 +1,70 @@
 services:
-  - type: web
-    name: my-portfolio-server
-    runtime: docker
-    repo: https://github.com/Manoj-Sunar/My-Portfolio
+  # Redis service (using Render's Redis)
+  - type: redis
+    name: portfolio-redis
     plan: free
-    dockerContext: ./server  # Use server folder as context
+    maxmemoryPolicy: noeviction
+    ipAllowList: [] # Allow all connections (restricted by service binding)
+
+  # Server API Service - Using Docker
+  - type: web
+    name: portfolio-server
+    runtime: docker
+    repo: https://github.com/Manoj-Sunar/My-Portfolio # Replace with your repo
+    plan: free
     dockerfilePath: ./server/Dockerfile
+    dockerContext: ./server
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
         value: 5000
+      - key: MONGODB_URI
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: EMAIL_HOST
+        sync: false
+      - key: EMAIL_PORT
+        sync: false
+      - key: EMAIL_USER
+        sync: false
+      - key: EMAIL_PASS
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: APP_URL
+        fromService:
+          name: manoj-portfolio
+          type: web
+          property: host
+      - key: REDIS_URL
+        fromService:
+          name: portfolio-redis
+          type: redis
+          property: connectionString
 
+  # Client Service - Using Docker
   - type: web
     name: manoj-portfolio
     runtime: docker
-    repo: https://github.com/Manoj-Sunar/My-Portfolio
+    repo: https://github.com/Manoj-Sunar/My-Portfolio # Replace with your repo
     plan: free
-    dockerContext: ./client  # Use client folder as context
     dockerfilePath: ./client/Dockerfile
+    dockerContext: ./client
     envVars:
-      - key: REACT_APP_API_URL
-        value: https://my-portfolio-server.onrender.com
+      - key: NODE_ENV
+        value: production
+      - key: VITE_API_URL
+        fromService:
+          name: portfolio-server
+          type: web
+          property: host
+          # This will set VITE_API_URL to the server's URL + /api
+    buildCommand: |
+      # Build the client with production environment
+      cd client && npm install && VITE_API_URL=/api npm run build

@@ -376,8 +376,7 @@
             "skills": "React.js, Node.js, Express.js, MongoDB, Tailwind CSS, Bootstrap",
             "githubUrl": "",
             "websiteUrl": "",
-            "highlights": "",
-            "id": "itm_loaded_0_0_1782307613161"
+            "highlights": ""
           },
           {
             "title": "MERN STACK DEVELOPER (REMOTE)",
@@ -387,8 +386,7 @@
             "skills": "MERN Stack, Express.js, React.js, Node.js, Next.js",
             "githubUrl": "",
             "websiteUrl": "",
-            "highlights": "",
-            "id": "itm_loaded_0_1_1782307613161"
+            "highlights": ""
           }
         ]
       },
@@ -405,8 +403,7 @@
             "skills": "Data Structures, DBMS, Web Development, Software Engineering",
             "githubUrl": "",
             "websiteUrl": "",
-            "highlights": "",
-            "id": "itm_loaded_1_0_1782307613161"
+            "highlights": ""
           }
         ]
       },
@@ -423,8 +420,7 @@
             "skills": "Node.js, Express, MongoDB, Bootstrap, EJS",
             "githubUrl": "",
             "websiteUrl": "",
-            "highlights": "",
-            "id": "itm_loaded_2_0_1782307613161"
+            "highlights": ""
           },
           {
             "title": "Inventory Management System",
@@ -434,8 +430,7 @@
             "skills": "React.js, Node.js, MongoDB, Tailwind CSS",
             "githubUrl": "",
             "websiteUrl": "",
-            "highlights": "",
-            "id": "itm_loaded_2_1_1782307613161"
+            "highlights": ""
           },
           {
             "title": "Church Website ( Headless CMS or a Decoupled CMS )",
@@ -445,11 +440,9 @@
             "skills": "Next JS, Nest JS, javascript, typescript, Mongodb Atlas, Redis for caching, react query for server state management, tailwind css, Docker",
             "githubUrl": "",
             "websiteUrl": "",
-            "highlights": "",
-            "id": "itm_loaded_2_2_1782307613161"
+            "highlights": ""
           },
           {
-            "id": "itm_1782307971518",
             "title": "Portfolio ( CMS )",
             "subtitle": "Personal",
             "date": "June 7 2026 to June 23 2026",

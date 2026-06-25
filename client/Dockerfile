@@ -1,35 +1,40 @@
-# Stage 1: Build the React client app with Node and Vite
-FROM node:20-alpine AS builder
+# Multi-stage build for client
+FROM node:20-alpine as builder
 
 WORKDIR /app
 
-# Copy dependency definition configs from the client folder
-COPY client/package*.json ./
+# Copy package files
+COPY package*.json ./
 
-# Install packages including devDependencies needed for compiling TS
+# Install dependencies
 RUN npm ci
 
-# Copy the entire client directory source files
-# Note: The destination is ./ (current directory inside container)
+# Copy source code
 COPY . .
 
-# Compile application using vite build
+# Build the application with production API URL
+# This will be overridden by environment variable in Render
+ARG VITE_API_URL=/api
+ENV VITE_API_URL=$VITE_API_URL
+
 RUN npm run build
 
-# Stage 2: Serve the optimized production assets with Nginx
-FROM nginx:alpine AS runner
+# Production stage
+FROM node:20-alpine
 
-# Remove default static landing page content
-RUN rm -rf /usr/share/nginx/html/*
+WORKDIR /app
 
-# Copy built files from standard multi-stage build directory
-COPY --from=builder /app/dist /usr/share/nginx/html
+# Install serve to run the app
+RUN npm install -g serve
 
-# Replace standard Nginx configurations with our robust custom config
-COPY client/nginx.conf /etc/nginx/conf.d/default.conf
+# Copy built files from builder stage
+COPY --from=builder /app/dist ./dist
 
-# Expose Nginx serving port
-EXPOSE 80
+# Copy package.json for serve
+COPY package*.json ./
 
-# Execute server in foreground
-CMD ["nginx", "-g", "daemon off;"]
+# Expose port
+EXPOSE 3000
+
+# Start the app with serve
+CMD ["serve", "-s", "dist", "-l", "3000"]

@@ -1,8 +1,7 @@
 import axios from 'axios';
 
-const localhosturl = "https://localhost:5000/api";
-const productionurl = "https://my-portfolio-server-x7tj.onrender.com/api";
-const URL = productionurl || localhosturl
+const URL ='http://localhost:5000/api';
+
 // Create a configured Axios instance
 const api = axios.create({
   baseURL: URL,

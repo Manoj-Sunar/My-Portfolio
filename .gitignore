@@ -1,4 +1,28 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# Build outputs
+dist/
+build/
+*.log
+
+# Environment files
+.env
 .env*
+.env.local
+.env.*.local
 .env.docker
-.env.local.docker
-node_modules
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Docker volumes
+redis_data/
+uploads_data/
