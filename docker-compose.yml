@@ -53,7 +53,7 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
-    container_name: portfolio_client
+    container_name: manoj_portfolio
     restart: unless-stopped
     ports:
       - "3000:80"
