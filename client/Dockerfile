@@ -3,14 +3,15 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copy dependency definition configs
-COPY package*.json ./
+# Copy dependency definition configs from the client folder
+COPY client/package*.json ./
 
 # Install packages including devDependencies needed for compiling TS
 RUN npm ci
 
 # Copy the entire client directory source files
-COPY . .
+# Note: The destination is ./ (current directory inside container)
+COPY client/ ./
 
 # Compile application using vite build
 RUN npm run build
@@ -25,7 +26,7 @@ RUN rm -rf /usr/share/nginx/html/*
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 # Replace standard Nginx configurations with our robust custom config
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY client/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose Nginx serving port
 EXPOSE 80

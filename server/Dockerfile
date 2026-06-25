@@ -3,23 +3,21 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copy package configurations
-COPY package*.json ./
+# Copy package configurations from the server folder
+# Note: The build context is the repository root, so we need to specify server/
+COPY server/package*.json ./
 
 # Install dependencies including devDependencies to run types & compilation
 RUN npm ci
 
 # Copy the entire server source files
-COPY . .
+COPY server/ ./ 
 
 # Build the production bundle using esbuild
 RUN npm run build
 
 # Stage 2: Clean and minimal production runtime environment
 FROM node:20-alpine AS runner
-
-# Install curl for health checks (optional - using node for health check instead)
-# RUN apk add --no-cache curl
 
 WORKDIR /app
 
