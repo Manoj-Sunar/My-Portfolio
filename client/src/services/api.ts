@@ -1,8 +1,11 @@
 import axios from 'axios';
 
+const localhosturl = "https://localhost:5000/api";
+const productionurl = "https://my-portfolio-server-x7tj.onrender.com/api";
+const URL = productionurl || localhosturl
 // Create a configured Axios instance
 const api = axios.create({
-  baseURL: 'https://my-portfolio-server-x7tj.onrender.com/api',
+  baseURL: URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -30,7 +33,7 @@ api.interceptors.response.use(
       // Clear token and reload or trigger logout event
       localStorage.removeItem('portfolio_token');
       localStorage.removeItem('portfolio_user');
-      
+
       // Dispatch custom event so context state can sync automatically
       window.dispatchEvent(new Event('auth_session_expired'));
     }
