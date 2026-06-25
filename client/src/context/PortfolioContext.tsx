@@ -81,7 +81,7 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const updateProjectMutation = useMutation({
     mutationFn: async ({ id, data }: { id: string; data: Partial<ProjectType> }) => {
-      const res = await api.put(`/projects/${id}`, data);
+      const res = await api.patch(`/projects/${id}`, data);
       return res.data;
     },
     onSuccess: () => {
@@ -110,7 +110,7 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const reorderProjectsMutation = useMutation({
     mutationFn: async (orderedIds: string[]) => {
-      await api.put('/projects/reorder', { ids: orderedIds });
+      await api.post('/projects/reorder', { ids: orderedIds });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['portfolio'] });
@@ -138,7 +138,7 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const updateEducationMutation = useMutation({
     mutationFn: async ({ id, data }: { id: string; data: Partial<EducationType> }) => {
-      const res = await api.put(`/education/${id}`, data);
+      const res = await api.patch(`/education/${id}`, data);
       return res.data;
     },
     onSuccess: () => {
@@ -211,7 +211,7 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const updateAboutMutation = useMutation({
     mutationFn: async (data: Partial<AboutType>) => {
-      const res = await api.put('/about', data);
+      const res = await api.patch('/about', data);
       return res.data;
     },
     onSuccess: () => {
