@@ -88,7 +88,7 @@ export default function App() {
                 <Route path="/cv" element={<CV />} />
                 
                 {/* Auth endpoints */}
-                <Route path="/login" element={<Login />} />
+                <Route path="/manoj-admin-login" element={<Login />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
               </Route>
