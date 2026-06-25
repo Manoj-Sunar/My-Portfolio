@@ -1,8 +1,8 @@
+# render.yaml - Both Services
 services:
-  # Server service
   - type: web
     name: my-portfolio-server
-    runtime: image
+    runtime: docker
     repo: https://github.com/Manoj-Sunar/My-Portfolio
     plan: free
     dockerContext: .
@@ -13,7 +13,6 @@ services:
       - key: PORT
         value: 5000
 
-  # Client service (updated name)
   - type: web
     name: manoj-portfolio
     runtime: docker
