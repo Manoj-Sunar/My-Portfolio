@@ -1,4 +1,4 @@
+.env*
 .env.docker
 .env.local.docker
 node_modules
-.env*
