@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create a configured Axios instance
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: 'https://my-portfolio-j9yd.onrender.com/api',
   headers: {
     'Content-Type': 'application/json',
   },
