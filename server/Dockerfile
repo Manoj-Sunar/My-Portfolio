@@ -1,44 +1,40 @@
-# Stage 1: Build and compile the TypeScript Express application
+# Stage 1: Build the TypeScript Express application
 FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copy package configurations from the server folder
-# Note: The build context is the repository root, so we need to specify server/
-COPY server/package*.json ./
+# Copy package files (now relative to server folder)
+COPY package*.json ./
 
-# Install dependencies including devDependencies to run types & compilation
+# Install dependencies
 RUN npm ci
 
-# Copy the entire server source files
-COPY server/ ./ 
+# Copy source files
+COPY . .
 
-# Build the production bundle using esbuild
+# Build the production bundle
 RUN npm run build
 
-# Stage 2: Clean and minimal production runtime environment
+# Stage 2: Production runtime
 FROM node:20-alpine AS runner
 
 WORKDIR /app
 
-# Set production environment flags
 ENV NODE_ENV=production
 ENV PORT=5000
 
-# Copy package files first for better caching
+# Copy package files
 COPY --from=builder /app/package*.json ./
 
-# Install production-only dependencies
+# Install production dependencies only
 RUN npm ci --omit=dev
 
-# Copy compiled assets from builder
+# Copy built assets
 COPY --from=builder /app/dist ./dist
 
-# Set up local directories for persistent fallbacks or logs
+# Create uploads directory
 RUN mkdir -p public/uploads
 
-# Expose the internally mapped PORT
 EXPOSE 5000
 
-# Launch the production consolidated server CJS model
 CMD ["node", "dist/server.cjs"]

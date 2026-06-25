@@ -11,7 +11,7 @@ RUN npm ci
 
 # Copy the entire client directory source files
 # Note: The destination is ./ (current directory inside container)
-COPY client/ ./
+COPY . .
 
 # Compile application using vite build
 RUN npm run build

@@ -1,11 +1,10 @@
-# render.yaml - Both Services
 services:
   - type: web
     name: my-portfolio-server
     runtime: docker
     repo: https://github.com/Manoj-Sunar/My-Portfolio
     plan: free
-    dockerContext: .
+    dockerContext: ./server  # Use server folder as context
     dockerfilePath: ./server/Dockerfile
     envVars:
       - key: NODE_ENV
@@ -18,7 +17,7 @@ services:
     runtime: docker
     repo: https://github.com/Manoj-Sunar/My-Portfolio
     plan: free
-    dockerContext: .
+    dockerContext: ./client  # Use client folder as context
     dockerfilePath: ./client/Dockerfile
     envVars:
       - key: REACT_APP_API_URL

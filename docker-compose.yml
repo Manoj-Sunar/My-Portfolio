@@ -1,7 +1,5 @@
 services:
-  # ----------------------------------------------------------------------------
-  # 1. Redis Caching Service
-  # ----------------------------------------------------------------------------
+  # Redis caching service
   redis:
     image: redis:7-alpine
     container_name: portfolio_redis
@@ -19,12 +17,10 @@ services:
     networks:
       - portfolio_network
 
-  # ----------------------------------------------------------------------------
-  # 2. Express Backend Server
-  # ----------------------------------------------------------------------------
+  # Express Backend Server
   server:
     build:
-      context: ./server
+      context: ./server  # Build context is server folder
       dockerfile: Dockerfile
     container_name: portfolio_server
     restart: unless-stopped
@@ -46,12 +42,10 @@ services:
     networks:
       - portfolio_network
 
-  # ----------------------------------------------------------------------------
-  # 3. React Client (Nginx Frontend Static Serve & Reverse Proxy)
-  # ----------------------------------------------------------------------------
+  # React Client (Nginx)
   client:
     build:
-      context: ./client
+      context: ./client  # Build context is client folder
       dockerfile: Dockerfile
     container_name: manoj_portfolio
     restart: unless-stopped
@@ -63,18 +57,12 @@ services:
     networks:
       - portfolio_network
 
-# ------------------------------------------------------------------------------
-# Persistent Volume Declarations
-# ------------------------------------------------------------------------------
 volumes:
   redis_data:
     driver: local
   uploads_data:
     driver: local
 
-# ------------------------------------------------------------------------------
-# Networks Definition
-# ------------------------------------------------------------------------------
 networks:
   portfolio_network:
     driver: bridge
