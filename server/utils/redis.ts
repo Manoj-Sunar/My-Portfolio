@@ -72,14 +72,18 @@ class RedisCacheManager {
     try {
       console.log(`[Redis Cache] Attempting connection to Redis environment...`);
       this.redis = new Redis(redisUrl, {
-        maxRetriesPerRequest: 1,
-        connectTimeout: 3000,
+        lazyConnect: true,
+        enableReadyCheck: true,
+        maxRetriesPerRequest: 3,
+        connectTimeout: 10000,
+
         retryStrategy(times: any) {
-          if (times > 2) {
-            console.warn('[Redis Cache] Redis server unavailable after retries. Falling back to in-memory system.');
+          if (times > 5) {
+            console.warn("[Redis Cache] Maximum retries reached.");
             return null;
           }
-          return Math.min(times * 100, 1000);
+
+          return Math.min(times * 500, 5000);
         }
       });
 

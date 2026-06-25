@@ -5,6 +5,8 @@
     "useDefineForClassFields": false,
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "allowJs": true,
     "resolveJsonModule": true,
