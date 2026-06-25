@@ -3,10 +3,11 @@ import express from 'express';
 import path from 'path';
 import fs from 'fs';
 import helmet from 'helmet';
-import { createServer as createViteServer } from 'vite';
+
 import { connectDB, loadDB } from './config/database.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import apiRouter from "./routes/index.js";
+import { redisCache } from './utils/redis.js';
 
 async function bootstrap() {
   const app = express();
@@ -14,6 +15,8 @@ async function bootstrap() {
 
   // 0. Connect and Seed MongoDB / Local fallback Database
   await connectDB();
+
+  await redisCache.initialize();
   
   // Initialize database on startup
   try {
