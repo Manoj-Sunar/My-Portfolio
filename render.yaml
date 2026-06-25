@@ -16,7 +16,7 @@ services:
   # Client service (updated name)
   - type: web
     name: manoj-portfolio
-    runtime: image
+    runtime: docker
     repo: https://github.com/Manoj-Sunar/My-Portfolio
     plan: free
     dockerContext: .
