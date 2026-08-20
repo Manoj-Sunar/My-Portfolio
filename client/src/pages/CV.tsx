@@ -34,92 +34,126 @@ const CV: React.FC = () => {
   const { personalInfo, sections, skills, languages, references } = cv;
   const GITHUB_URL = 'https://github.com/Manoj-Sunar';
 
-  // ============================================================
-  //  PDF GENERATION – now matches screen design perfectly
-  // ============================================================
+  // ================================================================
+  //  PDF GENERATION – with clickable links and perfect proportions
+  // ================================================================
   const handleDownloadPDF = () => {
     try {
       const buildPDF = (scale: number) => {
         const doc = new jsPDF('p', 'mm', 'a4');
         const pageWidth = 210;
-        const pageHeight = 297;
         const margin = 16 * scale;
         const usableWidth = pageWidth - margin * 2;
         let y = margin;
 
-        // ---- Name (larger, bold, slate‑900) ----
+        // ---- Name ----
         doc.setFont('helvetica', 'bold');
-        doc.setFontSize(24 * scale);
+        doc.setFontSize(26 * scale);
         doc.setTextColor(15, 23, 42);
         doc.text(personalInfo.name || 'Manoj Sunar', margin, y);
-        y += 10 * scale;
+        y += 11 * scale;
 
-        // ---- Title (blue, bold) + Contacts (slate‑600, normal) ----
+        // ---- Title + clickable contacts ----
         const title = personalInfo.title || 'Full Stack Developer';
-        const contactParts = [];
-        if (personalInfo.address) contactParts.push(personalInfo.address);
-        if (personalInfo.phone) contactParts.push(personalInfo.phone);
-        if (personalInfo.email) contactParts.push(personalInfo.email);
-        if (personalInfo.website)
-          contactParts.push(personalInfo.website.replace(/^https?:\/\//i, ''));
-        contactParts.push(GITHUB_URL.replace(/^https?:\/\//i, '')); // always include GitHub
-        const contacts = contactParts.join('  |  ');
 
-        // Draw title and contacts on the same line if they fit
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(12 * scale);
-        doc.setTextColor(37, 99, 235); // blue‑600
-        const titleWidth = doc.getTextWidth(title);
+        // Build contact items with their URLs
+        const contactItems: { text: string; url?: string }[] = [];
+        if (personalInfo.address) contactItems.push({ text: personalInfo.address });
+        if (personalInfo.phone) contactItems.push({ text: personalInfo.phone, url: `tel:${personalInfo.phone}` });
+        if (personalInfo.email) contactItems.push({ text: personalInfo.email, url: `mailto:${personalInfo.email}` });
+        if (personalInfo.website) {
+          const cleanWebsite = personalInfo.website.replace(/^https?:\/\//i, '');
+          contactItems.push({ text: cleanWebsite, url: personalInfo.website });
+        }
+        const cleanGithub = GITHUB_URL.replace(/^https?:\/\//i, '');
+        contactItems.push({ text: cleanGithub, url: GITHUB_URL });
+
         const separator = '  |  ';
-        const separatorWidth = doc.getTextWidth(separator);
 
-        // Try to fit everything on one line
+        // First, try to draw title and all contacts on one line
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(13 * scale);
+        doc.setTextColor(37, 99, 235);
+        const titleWidth = doc.getTextWidth(title);
+        const sepWidth = doc.getTextWidth(separator);
+
+        // Measure total width of contacts
+        let totalContactsWidth = 0;
         doc.setFont('helvetica', 'normal');
-        doc.setFontSize(10 * scale);
-        doc.setTextColor(71, 85, 105); // slate‑600
-        const contactsWidth = doc.getTextWidth(contacts);
-        const totalWidth = titleWidth + separatorWidth + contactsWidth;
+        doc.setFontSize(10.5 * scale);
+        contactItems.forEach((item, idx) => {
+          const w = doc.getTextWidth(item.text);
+          totalContactsWidth += w;
+          if (idx < contactItems.length - 1) totalContactsWidth += sepWidth;
+        });
+
+        const totalWidth = titleWidth + sepWidth + totalContactsWidth;
 
         if (totalWidth < usableWidth) {
-          // Draw title, then separator, then contacts
+          // ---- One line: title + separator + contacts ----
+          // Draw title
           doc.setFont('helvetica', 'bold');
-          doc.setFontSize(12 * scale);
+          doc.setFontSize(13 * scale);
           doc.setTextColor(37, 99, 235);
           doc.text(title, margin, y);
-          const x = margin + titleWidth;
+          let x = margin + titleWidth + sepWidth;
+
+          // Draw each contact with separator before (except first)
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(10.5 * scale);
+          doc.setTextColor(71, 85, 105);
+          let startX = margin + titleWidth + sepWidth;
+          contactItems.forEach((item, idx) => {
+            const textW = doc.getTextWidth(item.text);
+            const xPos = startX;
+            doc.text(item.text, xPos, y);
+            // Add link if URL exists
+            if (item.url) {
+              const textHeight = 4 * scale;
+              doc.link(xPos, y - textHeight, textW, textHeight, { url: item.url });
+            }
+            startX += textW + sepWidth;
+          });
+          y += 6.5 * scale;
+        } else {
+          // ---- Two lines: title on first, contacts on second with indent ----
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(13 * scale);
+          doc.setTextColor(37, 99, 235);
+          doc.text(title, margin, y);
+          y += 6.5 * scale;
+
+          // Contacts on next line with small indent
           doc.setFont('helvetica', 'normal');
           doc.setFontSize(10 * scale);
           doc.setTextColor(71, 85, 105);
-          doc.text(separator + contacts, x, y);
-          y += 6 * scale;
-        } else {
-          // Not enough width – put contacts on the next line
-          doc.setFont('helvetica', 'bold');
-          doc.setFontSize(12 * scale);
-          doc.setTextColor(37, 99, 235);
-          doc.text(title, margin, y);
-          y += 6 * scale;
-          // Contacts on next line with a small indent (2mm)
-          doc.setFont('helvetica', 'normal');
-          doc.setFontSize(9.5 * scale);
-          doc.setTextColor(71, 85, 105);
-          const wrappedContacts = doc.splitTextToSize(contacts, usableWidth - 2);
-          wrappedContacts.forEach((line: string) => {
-            doc.text(line, margin + 2, y);
-            y += 4.5 * scale;
+          let x = margin + 2;
+          contactItems.forEach((item, idx) => {
+            const textW = doc.getTextWidth(item.text);
+            doc.text(item.text, x, y);
+            if (item.url) {
+              const textHeight = 4 * scale;
+              doc.link(x, y - textHeight, textW, textHeight, { url: item.url });
+            }
+            x += textW;
+            if (idx < contactItems.length - 1) {
+              doc.text(separator, x, y);
+              x += doc.getTextWidth(separator);
+            }
           });
+          y += 5.5 * scale;
         }
         y += 2 * scale;
 
         // ---- Summary ----
         if (personalInfo.summary) {
           doc.setFont('helvetica', 'normal');
-          doc.setFontSize(9.5 * scale);
+          doc.setFontSize(10 * scale);
           doc.setTextColor(71, 85, 105);
           const summaryLines = doc.splitTextToSize(personalInfo.summary, usableWidth);
           summaryLines.forEach((line: string) => {
             doc.text(line, margin, y);
-            y += 4.8 * scale;
+            y += 5 * scale;
           });
           y += 3 * scale;
         }
@@ -127,7 +161,7 @@ const CV: React.FC = () => {
         // ---- Core Skills (two‑column) ----
         if (skills && skills.length > 0) {
           doc.setFont('helvetica', 'bold');
-          doc.setFontSize(12 * scale);
+          doc.setFontSize(13 * scale);
           doc.setTextColor(15, 23, 42);
           doc.text('CORE SKILLS', margin, y);
           y += 5 * scale;
@@ -151,11 +185,11 @@ const CV: React.FC = () => {
               const line = `${cat.category}: ${cat.items.join(', ')}`;
               const lines = doc.splitTextToSize(line, colWidth);
               doc.setFont('helvetica', 'normal');
-              doc.setFontSize(9 * scale);
+              doc.setFontSize(9.5 * scale);
               doc.setTextColor(51, 65, 85);
               lines.forEach((l: string) => {
                 doc.text(l, x, curY);
-                curY += 4.5 * scale;
+                curY += 4.8 * scale;
               });
               curY += 1.5 * scale;
             });
@@ -167,12 +201,12 @@ const CV: React.FC = () => {
           y = Math.max(leftY, rightY) + 3 * scale;
         }
 
-        // ---- Sections (Experience, Education, etc.) ----
+        // ---- Sections ----
         if (sections && sections.length > 0) {
           sections.forEach((section) => {
             y += 2 * scale;
             doc.setFont('helvetica', 'bold');
-            doc.setFontSize(12 * scale);
+            doc.setFontSize(13 * scale);
             doc.setTextColor(15, 23, 42);
             doc.text(section.title.toUpperCase(), margin, y);
             y += 5 * scale;
@@ -183,9 +217,9 @@ const CV: React.FC = () => {
 
             if (section.items && section.items.length > 0) {
               section.items.forEach((item) => {
-                // Item header: title + subtitle (left), date (right)
+                // Item header
                 doc.setFont('helvetica', 'bold');
-                doc.setFontSize(10.5 * scale);
+                doc.setFontSize(11 * scale);
                 doc.setTextColor(15, 23, 42);
                 let headerText = item.title;
                 if (item.subtitle) headerText += ` — ${item.subtitle}`;
@@ -203,7 +237,7 @@ const CV: React.FC = () => {
                   y += 5.5 * scale;
                   if (dateText) {
                     doc.setFont('helvetica', 'italic');
-                    doc.setFontSize(8.5 * scale);
+                    doc.setFontSize(9 * scale);
                     doc.setTextColor(100, 116, 139);
                     doc.text(dateText, margin, y);
                     y += 4.5 * scale;
@@ -213,19 +247,19 @@ const CV: React.FC = () => {
                 // Description
                 if (item.description) {
                   doc.setFont('helvetica', 'normal');
-                  doc.setFontSize(9 * scale);
+                  doc.setFontSize(9.5 * scale);
                   doc.setTextColor(71, 85, 105);
                   const descLines = doc.splitTextToSize(item.description, usableWidth);
                   descLines.forEach((line: string) => {
                     doc.text(line, margin, y);
-                    y += 4.5 * scale;
+                    y += 4.8 * scale;
                   });
                 }
 
                 // Highlights (bullets)
                 if (item.highlights) {
                   doc.setFont('helvetica', 'normal');
-                  doc.setFontSize(9 * scale);
+                  doc.setFontSize(9.5 * scale);
                   doc.setTextColor(71, 85, 105);
                   const bullets = item.highlights.split('\n').filter((b: string) => b.trim());
                   bullets.forEach((bullet: string) => {
@@ -234,23 +268,23 @@ const CV: React.FC = () => {
                     const bulletLines = doc.splitTextToSize(`• ${trimmed}`, usableWidth - 5);
                     bulletLines.forEach((line: string) => {
                       doc.text(line, margin + 4, y);
-                      y += 4.2 * scale;
+                      y += 4.5 * scale;
                     });
                   });
                 }
 
-                // Skill tags (as inline chips separated by bullets)
+                // Skill tags
                 if (item.skills) {
                   const skillArray = item.skills.split(',').map(s => s.trim()).filter(Boolean);
                   if (skillArray.length > 0) {
                     doc.setFont('helvetica', 'bold');
-                    doc.setFontSize(7.5 * scale);
+                    doc.setFontSize(8 * scale);
                     doc.setTextColor(51, 65, 85);
                     const skillLine = skillArray.join('  •  ');
                     const wrappedSkills = doc.splitTextToSize(skillLine, usableWidth);
                     wrappedSkills.forEach((line: string) => {
                       doc.text(line, margin, y);
-                      y += 4 * scale;
+                      y += 4.2 * scale;
                     });
                   }
                 }
@@ -261,11 +295,11 @@ const CV: React.FC = () => {
           });
         }
 
-        // ---- Languages & References (side‑by‑side) ----
+        // ---- Languages & References ----
         if ((languages && languages.length > 0) || (references && references.length > 0)) {
           y += 4 * scale;
           doc.setFont('helvetica', 'bold');
-          doc.setFontSize(12 * scale);
+          doc.setFontSize(13 * scale);
           doc.setTextColor(15, 23, 42);
           doc.text('ADDITIONAL', margin, y);
           y += 5 * scale;
@@ -280,36 +314,36 @@ const CV: React.FC = () => {
 
           if (languages && languages.length > 0) {
             doc.setFont('helvetica', 'bold');
-            doc.setFontSize(10 * scale);
+            doc.setFontSize(10.5 * scale);
             doc.setTextColor(15, 23, 42);
             doc.text('Languages', margin, leftY);
             leftY += 5 * scale;
             doc.setFont('helvetica', 'normal');
-            doc.setFontSize(8.5 * scale);
+            doc.setFontSize(9 * scale);
             doc.setTextColor(71, 85, 105);
             languages.forEach((lang) => {
               doc.text(`${lang.name} — ${lang.level}`, margin, leftY);
-              leftY += 4.2 * scale;
+              leftY += 4.5 * scale;
             });
           }
 
           if (references && references.length > 0) {
             const refX = margin + colWidth + 8;
             doc.setFont('helvetica', 'bold');
-            doc.setFontSize(10 * scale);
+            doc.setFontSize(10.5 * scale);
             doc.setTextColor(15, 23, 42);
             doc.text('References', refX, rightY);
             rightY += 5 * scale;
             doc.setFont('helvetica', 'normal');
-            doc.setFontSize(8.5 * scale);
+            doc.setFontSize(9 * scale);
             doc.setTextColor(71, 85, 105);
             references.forEach((ref) => {
               doc.text(ref.name, refX, rightY);
-              rightY += 4.2 * scale;
+              rightY += 4.5 * scale;
               doc.text(`${ref.position} — ${ref.company}`, refX, rightY);
-              rightY += 4.2 * scale;
+              rightY += 4.5 * scale;
               doc.text(ref.contact, refX, rightY);
-              rightY += 4.2 * scale;
+              rightY += 4.5 * scale;
             });
           }
 
@@ -319,7 +353,7 @@ const CV: React.FC = () => {
         return { doc, endY: y, margin };
       };
 
-      // ---- Auto‑scale to fit one page ----
+      // ---- Auto‑scale (minimum 0.65 to keep text readable) ----
       const measure = buildPDF(1.0);
       const totalHeight = measure.endY;
       const pageHeight = 297;
@@ -329,13 +363,13 @@ const CV: React.FC = () => {
       let scale = 1.0;
       if (totalHeight > availableHeight) {
         scale = availableHeight / totalHeight;
-        if (scale < 0.55) scale = 0.55; // ensure readability
+        if (scale < 0.65) scale = 0.65; // higher minimum readability
       }
 
       const final = buildPDF(scale);
       const fileName = (personalInfo.name || 'cv').toLowerCase().replace(/\s+/g, '_');
       final.doc.save(`${fileName}_cv.pdf`);
-      toast.success('CV exported as a single, beautiful page!');
+      toast.success('CV exported with clickable links!');
     } catch (err) {
       console.error(err);
       toast.error('PDF export failed. Please use the Print option instead.');
@@ -347,7 +381,7 @@ const CV: React.FC = () => {
     setTimeout(() => window.print(), 500);
   };
 
-  // -------- Screen Render (unchanged, already enhanced) --------
+  // -------- Screen Render (unchanged – already perfect) --------
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6 print:p-0 print:m-0">
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex flex-wrap items-center justify-between gap-4 print:hidden shadow-sm">
