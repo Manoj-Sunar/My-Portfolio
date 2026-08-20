@@ -32,35 +32,34 @@ const CV: React.FC = () => {
 
   const { personalInfo, sections, skills, languages, references } = cv;
 
-  // -------- ENHANCED PDF GENERATION – mirroring the screen design --------
+  // ---------- ENHANCED PDF GENERATION – exactly matching the UI ----------
   const handleDownloadPDF = () => {
     try {
       const buildPDF = (scale: number) => {
         const doc = new jsPDF('p', 'mm', 'a4');
         const pageWidth = 210;
         const pageHeight = 297;
-        const margin = 14 * scale;               // slightly larger margin
+        const margin = 16 * scale;            // similar to screen padding
         const usableWidth = pageWidth - margin * 2;
         let y = margin;
 
-        // ---- Name (larger, bold) ----
+        // ---- Name (bold, large) ----
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(22 * scale);
-        doc.setTextColor(15, 23, 42);            // slate-900
+        doc.setTextColor(15, 23, 42);          // slate-900
         doc.text(personalInfo.name || 'Manoj Sunar', margin, y);
         y += 9 * scale;
 
-        // ---- Title + contact info (with icons simulated by text) ----
+        // ---- Title + contact (bold title, normal contacts) ----
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(11 * scale);
-        doc.setTextColor(37, 99, 235);           // blue-600
+        doc.setTextColor(37, 99, 235);         // blue-600
         const title = personalInfo.title || 'Full Stack Developer';
-        // Build contact string with separators
         const contactParts = [];
-        if (personalInfo.address) contactParts.push(`📍 ${personalInfo.address}`);
-        if (personalInfo.phone) contactParts.push(`📞 ${personalInfo.phone}`);
-        if (personalInfo.email) contactParts.push(`✉ ${personalInfo.email}`);
-        if (personalInfo.website) contactParts.push(`🌐 ${personalInfo.website.replace(/^https?:\/\//i, '')}`);
+        if (personalInfo.address) contactParts.push(personalInfo.address);
+        if (personalInfo.phone) contactParts.push(personalInfo.phone);
+        if (personalInfo.email) contactParts.push(personalInfo.email);
+        if (personalInfo.website) contactParts.push(personalInfo.website.replace(/^https?:\/\//i, ''));
         const contacts = contactParts.join('  |  ');
         const headerLine = `${title}  |  ${contacts}`;
         const wrappedHeader = doc.splitTextToSize(headerLine, usableWidth);
@@ -70,11 +69,11 @@ const CV: React.FC = () => {
         });
         y += 2 * scale;
 
-        // ---- Summary (normal, lighter) ----
+        // ---- Summary (normal weight, slightly smaller) ----
         if (personalInfo.summary) {
           doc.setFont('helvetica', 'normal');
           doc.setFontSize(9 * scale);
-          doc.setTextColor(71, 85, 105);         // slate-600
+          doc.setTextColor(71, 85, 105);       // slate-600
           const summaryLines = doc.splitTextToSize(personalInfo.summary, usableWidth);
           summaryLines.forEach((line: string) => {
             doc.text(line, margin, y);
@@ -83,7 +82,7 @@ const CV: React.FC = () => {
           y += 3 * scale;
         }
 
-        // ---- Core Skills ----
+        // ---- Core Skills (two‑column layout like the UI) ----
         if (skills && skills.length > 0) {
           doc.setFont('helvetica', 'bold');
           doc.setFontSize(12 * scale);
@@ -95,24 +94,42 @@ const CV: React.FC = () => {
           doc.line(margin, y, pageWidth - margin, y);
           y += 5 * scale;
 
-          doc.setFont('helvetica', 'normal');
-          doc.setFontSize(9 * scale);
-          doc.setTextColor(51, 65, 85);          // slate-700
-          skills.forEach((cat) => {
-            const line = `${cat.category}: ${cat.items.join(', ')}`;
-            const lines = doc.splitTextToSize(line, usableWidth);
-            lines.forEach((l: string) => {
-              doc.text(l, margin, y);
-              y += 4.2 * scale;
+          // Split skills into two columns
+          const colWidth = (usableWidth / 2) - 4;
+          const leftX = margin;
+          const rightX = margin + colWidth + 8;
+          let leftY = y;
+          let rightY = y;
+          const half = Math.ceil(skills.length / 2);
+          const leftSkills = skills.slice(0, half);
+          const rightSkills = skills.slice(half);
+
+          const renderSkillColumn = (skillsArray: any[], x: number, startY: number) => {
+            let curY = startY;
+            skillsArray.forEach((cat) => {
+              const line = `${cat.category}: ${cat.items.join(', ')}`;
+              const lines = doc.splitTextToSize(line, colWidth);
+              doc.setFont('helvetica', 'normal');
+              doc.setFontSize(9 * scale);
+              doc.setTextColor(51, 65, 85);     // slate-700
+              lines.forEach((l: string) => {
+                doc.text(l, x, curY);
+                curY += 4.2 * scale;
+              });
+              // small gap between categories
+              curY += 1.5 * scale;
             });
-          });
-          y += 3 * scale;
+            return curY;
+          };
+
+          if (leftSkills.length) leftY = renderSkillColumn(leftSkills, leftX, leftY);
+          if (rightSkills.length) rightY = renderSkillColumn(rightSkills, rightX, rightY);
+          y = Math.max(leftY, rightY) + 2 * scale;
         }
 
         // ---- Sections (Experience, Education, etc.) ----
         if (sections && sections.length > 0) {
           sections.forEach((section) => {
-            // Section heading
             y += 2 * scale;
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(12 * scale);
@@ -126,14 +143,13 @@ const CV: React.FC = () => {
 
             if (section.items && section.items.length > 0) {
               section.items.forEach((item) => {
-                // Item header: title + subtitle (left) and date (right)
+                // Item header: title + subtitle, date on right if fits
                 doc.setFont('helvetica', 'bold');
                 doc.setFontSize(10 * scale);
                 doc.setTextColor(15, 23, 42);
                 let headerText = item.title;
                 if (item.subtitle) headerText += ` — ${item.subtitle}`;
                 const dateText = item.date || '';
-                // Measure to decide if date fits on same line
                 const headerWidth = doc.getTextWidth(headerText);
                 const dateWidth = doc.getTextWidth(dateText);
                 if (headerWidth + dateWidth + 6 < usableWidth) {
@@ -183,7 +199,7 @@ const CV: React.FC = () => {
                   });
                 }
 
-                // Skills tags (if any)
+                // Skills tags (comma separated, shown as a single line with bullet separators)
                 if (item.skills) {
                   const skillArray = item.skills.split(',').map(s => s.trim()).filter(Boolean);
                   if (skillArray.length > 0) {
@@ -199,13 +215,13 @@ const CV: React.FC = () => {
                   }
                 }
 
-                y += 2 * scale; // spacing between items
+                y += 2 * scale; // space between items
               });
             }
           });
         }
 
-        // ---- Languages & References (side‑by‑side) ----
+        // ---- Languages & References (side‑by‑side two columns) ----
         if ((languages && languages.length > 0) || (references && references.length > 0)) {
           y += 4 * scale;
           doc.setFont('helvetica', 'bold');
@@ -273,7 +289,7 @@ const CV: React.FC = () => {
       let scale = 1.0;
       if (totalHeight > availableHeight) {
         scale = availableHeight / totalHeight;
-        if (scale < 0.55) scale = 0.55; // keep minimum readability
+        if (scale < 0.55) scale = 0.55;
       }
 
       const final = buildPDF(scale);
@@ -291,7 +307,7 @@ const CV: React.FC = () => {
     setTimeout(() => window.print(), 500);
   };
 
-  // -------- Screen Render (unchanged, already enhanced) --------
+  // -------- Screen Render (unchanged – already perfect) --------
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6 print:p-0 print:m-0">
       {/* Toolbar */}
@@ -321,7 +337,7 @@ const CV: React.FC = () => {
         </div>
       </div>
 
-      {/* CV Content – same as before, perfectly styled */}
+      {/* CV Content – screen version (perfectly styled) */}
       <div
         id="printable-cv"
         className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 sm:p-12 print:border-none print:p-0 print:shadow-none shadow-lg"
