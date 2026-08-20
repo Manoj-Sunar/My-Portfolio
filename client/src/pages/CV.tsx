@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { jsPDF } from 'jspdf';
-
+import { FaGithub } from "react-icons/fa";
 const CV: React.FC = () => {
   const { cv, isLoading } = usePortfolio();
 
@@ -32,34 +32,36 @@ const CV: React.FC = () => {
 
   const { personalInfo, sections, skills, languages, references } = cv;
 
-  // ---------- ENHANCED PDF GENERATION – exactly matching the UI ----------
+  // ---------- PDF GENERATION – now includes GitHub ----------
   const handleDownloadPDF = () => {
     try {
       const buildPDF = (scale: number) => {
         const doc = new jsPDF('p', 'mm', 'a4');
         const pageWidth = 210;
         const pageHeight = 297;
-        const margin = 16 * scale;            // similar to screen padding
+        const margin = 16 * scale;
         const usableWidth = pageWidth - margin * 2;
         let y = margin;
 
-        // ---- Name (bold, large) ----
+        // ---- Name ----
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(22 * scale);
-        doc.setTextColor(15, 23, 42);          // slate-900
+        doc.setTextColor(15, 23, 42);
         doc.text(personalInfo.name || 'Manoj Sunar', margin, y);
         y += 9 * scale;
 
-        // ---- Title + contact (bold title, normal contacts) ----
+        // ---- Title + contact (including GitHub) ----
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(11 * scale);
-        doc.setTextColor(37, 99, 235);         // blue-600
+        doc.setTextColor(37, 99, 235);
         const title = personalInfo.title || 'Full Stack Developer';
         const contactParts = [];
         if (personalInfo.address) contactParts.push(personalInfo.address);
         if (personalInfo.phone) contactParts.push(personalInfo.phone);
         if (personalInfo.email) contactParts.push(personalInfo.email);
         if (personalInfo.website) contactParts.push(personalInfo.website.replace(/^https?:\/\//i, ''));
+        // --- NEW: include GitHub if present ---
+        
         const contacts = contactParts.join('  |  ');
         const headerLine = `${title}  |  ${contacts}`;
         const wrappedHeader = doc.splitTextToSize(headerLine, usableWidth);
@@ -69,11 +71,11 @@ const CV: React.FC = () => {
         });
         y += 2 * scale;
 
-        // ---- Summary (normal weight, slightly smaller) ----
+        // ---- Summary ----
         if (personalInfo.summary) {
           doc.setFont('helvetica', 'normal');
           doc.setFontSize(9 * scale);
-          doc.setTextColor(71, 85, 105);       // slate-600
+          doc.setTextColor(71, 85, 105);
           const summaryLines = doc.splitTextToSize(personalInfo.summary, usableWidth);
           summaryLines.forEach((line: string) => {
             doc.text(line, margin, y);
@@ -82,7 +84,7 @@ const CV: React.FC = () => {
           y += 3 * scale;
         }
 
-        // ---- Core Skills (two‑column layout like the UI) ----
+        // ---- Core Skills (two‑column) ----
         if (skills && skills.length > 0) {
           doc.setFont('helvetica', 'bold');
           doc.setFontSize(12 * scale);
@@ -94,7 +96,6 @@ const CV: React.FC = () => {
           doc.line(margin, y, pageWidth - margin, y);
           y += 5 * scale;
 
-          // Split skills into two columns
           const colWidth = (usableWidth / 2) - 4;
           const leftX = margin;
           const rightX = margin + colWidth + 8;
@@ -111,12 +112,11 @@ const CV: React.FC = () => {
               const lines = doc.splitTextToSize(line, colWidth);
               doc.setFont('helvetica', 'normal');
               doc.setFontSize(9 * scale);
-              doc.setTextColor(51, 65, 85);     // slate-700
+              doc.setTextColor(51, 65, 85);
               lines.forEach((l: string) => {
                 doc.text(l, x, curY);
                 curY += 4.2 * scale;
               });
-              // small gap between categories
               curY += 1.5 * scale;
             });
             return curY;
@@ -127,7 +127,7 @@ const CV: React.FC = () => {
           y = Math.max(leftY, rightY) + 2 * scale;
         }
 
-        // ---- Sections (Experience, Education, etc.) ----
+        // ---- Sections ----
         if (sections && sections.length > 0) {
           sections.forEach((section) => {
             y += 2 * scale;
@@ -143,7 +143,6 @@ const CV: React.FC = () => {
 
             if (section.items && section.items.length > 0) {
               section.items.forEach((item) => {
-                // Item header: title + subtitle, date on right if fits
                 doc.setFont('helvetica', 'bold');
                 doc.setFontSize(10 * scale);
                 doc.setTextColor(15, 23, 42);
@@ -164,13 +163,12 @@ const CV: React.FC = () => {
                   if (dateText) {
                     doc.setFont('helvetica', 'italic');
                     doc.setFontSize(8.5 * scale);
-                    doc.setTextColor(100, 116, 139); // slate-500
+                    doc.setTextColor(100, 116, 139);
                     doc.text(dateText, margin, y);
                     y += 4.5 * scale;
                   }
                 }
 
-                // Description
                 if (item.description) {
                   doc.setFont('helvetica', 'normal');
                   doc.setFontSize(8.5 * scale);
@@ -182,7 +180,6 @@ const CV: React.FC = () => {
                   });
                 }
 
-                // Highlights (bullets)
                 if (item.highlights) {
                   doc.setFont('helvetica', 'normal');
                   doc.setFontSize(8.5 * scale);
@@ -199,7 +196,6 @@ const CV: React.FC = () => {
                   });
                 }
 
-                // Skills tags (comma separated, shown as a single line with bullet separators)
                 if (item.skills) {
                   const skillArray = item.skills.split(',').map(s => s.trim()).filter(Boolean);
                   if (skillArray.length > 0) {
@@ -215,13 +211,13 @@ const CV: React.FC = () => {
                   }
                 }
 
-                y += 2 * scale; // space between items
+                y += 2 * scale;
               });
             }
           });
         }
 
-        // ---- Languages & References (side‑by‑side two columns) ----
+        // ---- Languages & References ----
         if ((languages && languages.length > 0) || (references && references.length > 0)) {
           y += 4 * scale;
           doc.setFont('helvetica', 'bold');
@@ -279,7 +275,7 @@ const CV: React.FC = () => {
         return { doc, endY: y, margin };
       };
 
-      // ---- Auto‑scale to fit one page ----
+      // ---- Auto‑scale ----
       const measure = buildPDF(1.0);
       const totalHeight = measure.endY;
       const pageHeight = 297;
@@ -307,10 +303,9 @@ const CV: React.FC = () => {
     setTimeout(() => window.print(), 500);
   };
 
-  // -------- Screen Render (unchanged – already perfect) --------
+  // -------- Screen Render (with your custom GitHub link) --------
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6 print:p-0 print:m-0">
-      {/* Toolbar */}
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex flex-wrap items-center justify-between gap-4 print:hidden shadow-sm">
         <div className="flex items-center space-x-3">
           <div className="p-2.5 bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 rounded-lg">
@@ -337,7 +332,6 @@ const CV: React.FC = () => {
         </div>
       </div>
 
-      {/* CV Content – screen version (perfectly styled) */}
       <div
         id="printable-cv"
         className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 sm:p-12 print:border-none print:p-0 print:shadow-none shadow-lg"
@@ -375,6 +369,10 @@ const CV: React.FC = () => {
                   <span>{personalInfo.website.replace(/^https?:\/\//i, '')}</span>
                 </a>
               )}
+              <a href="https://github.com/Manoj-Sunar" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                  <FaGithub size={14} className='text-gray-600'/>
+                  <span>https://github.com/Manoj-Sunar</span>
+                </a>
             </div>
           </div>
         </div>
