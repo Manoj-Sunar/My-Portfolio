@@ -1,18 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { CVSkeleton } from '../components/common/Skeleton';
-import { Mail, Phone, MapPin, Globe, FileText, Printer, Download, Shield, ChevronDown, Monitor, Github } from 'lucide-react';
+import { FileText, Printer, Download } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { jsPDF } from 'jspdf';
 
 const CV: React.FC = () => {
   const { cv, isLoading } = usePortfolio();
-  const [selectedStyle, setSelectedStyle] = useState<'modern' | 'classic' | 'creative'>('modern');
 
-  if (isLoading) {
-    return <CVSkeleton />;
-  }
-
+  if (isLoading) return <CVSkeleton />;
   if (!cv) {
     return (
       <div className="text-center py-20 bg-slate-50 border border-dashed rounded-xl">
@@ -21,271 +17,216 @@ const CV: React.FC = () => {
     );
   }
 
-  // Sync state with db initially, but let viewer toggle styles dynamically on preview screen!
-  const currentTemplate = selectedStyle;
-
-  const handlePrint = () => {
-    toast.success('Opening print interface... Select "Save as PDF" to export your CV.');
-    setTimeout(() => {
-      window.print();
-    }, 500);
-  };
-
   const { personalInfo, sections, skills, languages, references } = cv;
 
+  // -------- PDF generation – single page with auto‑scaling and line wrapping --------
   const handleDownloadPDF = () => {
     try {
-      // Dynamic rendering with responsive scaling to guarantee single-page constraint without overlapping text!
       const buildPDF = (scale: number) => {
         const doc = new jsPDF('p', 'mm', 'a4');
-        const margin = Math.max(8, 16 * scale); // dynamic left/right/top/bottom margin
         const pageWidth = 210;
         const pageHeight = 297;
-        const usableWidth = pageWidth - (margin * 2);
+        const margin = 12 * scale;
+        const usableWidth = pageWidth - margin * 2;
         let y = margin;
 
-        // Header: Name
+        // ---- Name ----
         doc.setFont('helvetica', 'bold');
-        doc.setFontSize(Math.max(13, 20 * scale));
-        doc.setTextColor(15, 23, 42); // slate-900
+        doc.setFontSize(20 * scale);
+        doc.setTextColor(15, 23, 42);
         doc.text(personalInfo.name || 'Manoj Sunar', margin, y);
-        y += 7 * scale;
+        y += 8 * scale;
 
-        // Title
+        // ---- Title + contacts (one line – split if too long) ----
         doc.setFont('helvetica', 'bold');
-        doc.setFontSize(Math.max(8.5, 11 * scale));
-        doc.setTextColor(37, 99, 235); // blue-600
-        doc.text(personalInfo.title || 'MERN Developer', margin, y);
-        y += 5.5 * scale;
-
-        // Contact Info as horizontal list
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(Math.max(7, 8.5 * scale));
-        doc.setTextColor(100, 116, 139); // slate-500
+        doc.setFontSize(10 * scale);
+        doc.setTextColor(37, 99, 235);
+        const title = personalInfo.title || 'Full Stack Developer';
         const contacts = [
-          personalInfo.email,
-          personalInfo.phone,
           personalInfo.address,
-          personalInfo.website ? personalInfo.website.replace(/^https?:\/\//i, '') : ''
-        ].filter(Boolean);
-        doc.text(contacts.join('   |   '), margin, y);
-        y += 4.5 * scale;
+          personalInfo.phone,
+          personalInfo.email,
+          personalInfo.website?.replace(/^https?:\/\//i, '') || ''
+        ].filter(Boolean).join(' | ');
+        const headerLine = `${title}  |  ${contacts}`;
+        // Wrap if too long
+        const wrappedHeader = doc.splitTextToSize(headerLine, usableWidth);
+        wrappedHeader.forEach((line: string) => {
+          doc.text(line, margin, y);
+          y += 5 * scale;
+        });
+        y += 2 * scale;
 
-        // Horizontal separator line
-        doc.setDrawColor(226, 232, 240); // slate-200
-        doc.setLineWidth(0.35);
-        doc.line(margin, y, pageWidth - margin, y);
-        y += 5.5 * scale;
-
-        // About/Summary
+        // ---- Summary ----
         if (personalInfo.summary) {
           doc.setFont('helvetica', 'normal');
-          doc.setFontSize(Math.max(7.5, 9.2 * scale));
-          doc.setTextColor(71, 85, 105); // slate-600
-          const textLines = doc.splitTextToSize(personalInfo.summary, usableWidth);
-          textLines.forEach((line: string) => {
+          doc.setFontSize(8.5 * scale);
+          doc.setTextColor(71, 85, 105);
+          const summaryLines = doc.splitTextToSize(personalInfo.summary, usableWidth);
+          summaryLines.forEach((line: string) => {
             doc.text(line, margin, y);
-            y += 4.2 * scale;
+            y += 4 * scale;
           });
-          y += 2.5 * scale;
+          y += 2 * scale;
         }
 
-        // Sections
+        // ---- Core Skills ----
+        if (skills && skills.length > 0) {
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(11 * scale);
+          doc.setTextColor(15, 23, 42);
+          doc.text('CORE SKILLS', margin, y);
+          y += 4 * scale;
+          doc.setDrawColor(200, 200, 200);
+          doc.setLineWidth(0.2 * scale);
+          doc.line(margin, y, pageWidth - margin, y);
+          y += 4 * scale;
+
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(8 * scale);
+          doc.setTextColor(51, 65, 85);
+          skills.forEach((cat) => {
+            const line = `${cat.category}: ${cat.items.join(', ')}`;
+            const lines = doc.splitTextToSize(line, usableWidth);
+            lines.forEach((l: string) => {
+              doc.text(l, margin, y);
+              y += 3.8 * scale;
+            });
+          });
+          y += 2 * scale;
+        }
+
+        // ---- Sections (Experience, Education, etc.) ----
         if (sections && sections.length > 0) {
           sections.forEach((section) => {
-            y += 1.5 * scale;
-            
-            // Section Title
+            y += 2 * scale;
             doc.setFont('helvetica', 'bold');
-            doc.setFontSize(Math.max(8.5, 10.5 * scale));
+            doc.setFontSize(11 * scale);
             doc.setTextColor(15, 23, 42);
             doc.text(section.title.toUpperCase(), margin, y);
-            y += 1.5 * scale;
-            
-            doc.setDrawColor(226, 232, 240);
-            doc.setLineWidth(0.25);
+            y += 4 * scale;
+            doc.setDrawColor(200, 200, 200);
+            doc.setLineWidth(0.2 * scale);
             doc.line(margin, y, pageWidth - margin, y);
-            y += 4.2 * scale;
+            y += 4 * scale;
 
-            if (section.content) {
-              doc.setFont('helvetica', 'normal');
-              doc.setFontSize(Math.max(7.5, 8.8 * scale));
-              doc.setTextColor(100, 116, 139);
-              const contentLines = doc.splitTextToSize(section.content, usableWidth);
-              contentLines.forEach((line: string) => {
-                doc.text(line, margin, y);
-                y += 4 * scale;
-              });
-              y += 1.5 * scale;
-            }
-
-            // Section Items
             if (section.items && section.items.length > 0) {
               section.items.forEach((item) => {
-                // Item header: Title & Subtitle + Date on the right
+                // Title + Subtitle (left), Date (right) – wrap if needed
                 doc.setFont('helvetica', 'bold');
-                doc.setFontSize(Math.max(8, 9.2 * scale));
+                doc.setFontSize(9 * scale);
                 doc.setTextColor(15, 23, 42);
-                
                 let headerText = item.title;
-                if (item.subtitle) {
-                  headerText += ` - ${item.subtitle}`;
+                if (item.subtitle) headerText += ` — ${item.subtitle}`;
+                // We'll split the header to allow wrapping, but we want date on right
+                // So we draw title left and date right separately
+                const headerWidth = doc.getTextWidth(headerText);
+                const dateText = item.date || '';
+                const dateWidth = doc.getTextWidth(dateText);
+                // If both fit on one line
+                if (headerWidth + dateWidth + 4 < usableWidth) {
+                  doc.text(headerText, margin, y);
+                  if (dateText) {
+                    doc.text(dateText, pageWidth - margin, y, { align: 'right' });
+                  }
+                  y += 4.5 * scale;
+                } else {
+                  // Put date on next line if needed
+                  doc.text(headerText, margin, y);
+                  y += 4.5 * scale;
+                  if (dateText) {
+                    doc.setFont('helvetica', 'italic');
+                    doc.setFontSize(8 * scale);
+                    doc.setTextColor(100, 116, 139);
+                    doc.text(dateText, margin, y);
+                    y += 4 * scale;
+                  }
                 }
-                doc.text(headerText, margin, y);
 
-                doc.setFont('helvetica', 'bold');
-                doc.setFontSize(Math.max(7, 8.2 * scale));
-                doc.setTextColor(100, 116, 139);
-                doc.text(item.date || '', pageWidth - margin, y, { align: 'right' });
-                y += 4.2 * scale;
-
-                // Item description
+                // Description
                 if (item.description) {
                   doc.setFont('helvetica', 'normal');
-                  doc.setFontSize(Math.max(7.5, 8.5 * scale));
+                  doc.setFontSize(8 * scale);
                   doc.setTextColor(71, 85, 105);
-                  const descLines = doc.splitTextToSize(item.description, usableWidth - 5);
+                  const descLines = doc.splitTextToSize(item.description, usableWidth);
                   descLines.forEach((line: string) => {
-                    doc.text(line, margin + 4, y);
+                    doc.text(line, margin, y);
                     y += 3.8 * scale;
                   });
                 }
 
-                // Item highlights
+                // Highlights (bullets)
                 if (item.highlights) {
                   doc.setFont('helvetica', 'normal');
-                  doc.setFontSize(Math.max(7.2, 8.2 * scale));
+                  doc.setFontSize(8 * scale);
                   doc.setTextColor(71, 85, 105);
-                  const hlLines = item.highlights.split('\n');
-                  hlLines.forEach((line) => {
-                    const trimmed = line.replace(/^[•\s\-*]+/, '').trim();
+                  const bullets = item.highlights.split('\n').filter((b: string) => b.trim());
+                  bullets.forEach((bullet: string) => {
+                    const trimmed = bullet.replace(/^[•\s\-*]+/, '').trim();
                     if (!trimmed) return;
-                    const bulletedLine = `- ${trimmed}`;
-                    const bulletLines = doc.splitTextToSize(bulletedLine, usableWidth - 8);
-                    bulletLines.forEach((bl: string) => {
-                      doc.text(bl, margin + 6, y);
+                    const bulletLines = doc.splitTextToSize(`• ${trimmed}`, usableWidth - 4);
+                    bulletLines.forEach((line: string) => {
+                      doc.text(line, margin + 4, y);
                       y += 3.6 * scale;
                     });
                   });
                 }
 
-                // Item links (GitHub / Website)
-                if (item.githubUrl || item.websiteUrl) {
-                  doc.setFont('helvetica', 'italic');
-                  doc.setFontSize(Math.max(7, 8 * scale));
-                  doc.setTextColor(59, 130, 246); // blue-500
-                  const links = [];
-                  if (item.githubUrl) links.push(`GitHub: ${item.githubUrl}`);
-                  if (item.websiteUrl) links.push(`Website: ${item.websiteUrl}`);
-                  doc.text(links.join('   |   '), margin + 4, y);
-                  y += 3.8 * scale;
-                }
-
-                // Item skills tags
-                if (item.skills) {
-                  doc.setFont('helvetica', 'italic');
-                  doc.setFontSize(Math.max(7, 8 * scale));
-                  doc.setTextColor(37, 99, 235);
-                  doc.text(`Technologies: ${item.skills}`, margin + 4, y);
-                  y += 4 * scale;
-                }
-
-                y += 1.5 * scale; // spacing between items
+                y += 2 * scale; // spacing between items
               });
             }
-            y += 1 * scale;
           });
         }
 
-        // Technical Capacities
-        if (skills && skills.length > 0) {
-          y += 2 * scale;
-          doc.setFont('helvetica', 'bold');
-          doc.setFontSize(Math.max(8.5, 10.5 * scale));
-          doc.setTextColor(15, 23, 42);
-          doc.text('CAPACITIES & SKILLS', margin, y);
-          y += 1.5 * scale;
-          doc.setDrawColor(226, 232, 240);
-          doc.setLineWidth(0.25);
-          doc.line(margin, y, pageWidth - margin, y);
-          y += 4.2 * scale;
-
-          skills.forEach((cat) => {
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(Math.max(8, 9.2 * scale));
-            doc.setTextColor(15, 23, 42);
-            doc.text(cat.category, margin, y);
-            y += 3.8 * scale;
-
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(Math.max(7.5, 8.5 * scale));
-            doc.setTextColor(71, 85, 105);
-            const skillLines = doc.splitTextToSize(cat.items.join(', '), usableWidth - 5);
-            skillLines.forEach((line: string) => {
-              doc.text(line, margin + 4, y);
-              y += 3.8 * scale;
-            });
-            y += 1.5 * scale;
-          });
-        }
-
-        // Languages & References side-by-side or list
+        // ---- Languages & References (if present) ----
         if ((languages && languages.length > 0) || (references && references.length > 0)) {
-          y += 2 * scale;
+          y += 4 * scale;
           doc.setFont('helvetica', 'bold');
-          doc.setFontSize(Math.max(8.5, 10.5 * scale));
+          doc.setFontSize(11 * scale);
           doc.setTextColor(15, 23, 42);
-          doc.text('LANGUAGES & REFERENCES', margin, y);
-          y += 1.5 * scale;
-          doc.setDrawColor(226, 232, 240);
-          doc.setLineWidth(0.25);
+          doc.text('ADDITIONAL', margin, y);
+          y += 4 * scale;
+          doc.setDrawColor(200, 200, 200);
+          doc.setLineWidth(0.2 * scale);
           doc.line(margin, y, pageWidth - margin, y);
-          y += 5 * scale;
+          y += 4 * scale;
 
-          const originalY = y;
-          let leftY = originalY;
-          let rightY = originalY;
+          const colWidth = usableWidth / 2 - 4;
+          let leftY = y;
+          let rightY = y;
 
-          // Draw side-by-side split columns
           if (languages && languages.length > 0) {
             doc.setFont('helvetica', 'bold');
-            doc.setFontSize(Math.max(8, 9.2 * scale));
+            doc.setFontSize(9 * scale);
             doc.setTextColor(15, 23, 42);
-            doc.text('Spoken Languages', margin, leftY);
-            leftY += 4.2 * scale;
-
+            doc.text('Languages', margin, leftY);
+            leftY += 4 * scale;
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(8 * scale);
+            doc.setTextColor(71, 85, 105);
             languages.forEach((lang) => {
-              doc.setFont('helvetica', 'normal');
-              doc.setFontSize(Math.max(7.5, 8.5 * scale));
-              doc.setTextColor(71, 85, 105);
-              doc.text(`${lang.name} - ${lang.level}`, margin + 2, leftY);
+              doc.text(`${lang.name} — ${lang.level}`, margin, leftY);
               leftY += 3.8 * scale;
             });
           }
 
           if (references && references.length > 0) {
-            const colX = margin + (usableWidth / 2);
+            const refX = margin + colWidth + 8;
             doc.setFont('helvetica', 'bold');
-            doc.setFontSize(Math.max(8, 9.2 * scale));
+            doc.setFontSize(9 * scale);
             doc.setTextColor(15, 23, 42);
-            doc.text('Professional References', colX, rightY);
-            rightY += 4.2 * scale;
-
+            doc.text('References', refX, rightY);
+            rightY += 4 * scale;
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(8 * scale);
+            doc.setTextColor(71, 85, 105);
             references.forEach((ref) => {
-              doc.setFont('helvetica', 'bold');
-              doc.setFontSize(Math.max(7.5, 8.8 * scale));
-              doc.setTextColor(71, 85, 105);
-              doc.text(ref.name, colX + 2, rightY);
-              rightY += 3.5 * scale;
-
-              doc.setFont('helvetica', 'normal');
-              doc.setFontSize(Math.max(7, 8 * scale));
-              doc.setTextColor(100, 116, 139);
-              doc.text(`${ref.position} - ${ref.company}`, colX + 4, rightY);
-              rightY += 3.5 * scale;
-              
-              doc.text(ref.contact, colX + 4, rightY);
-              rightY += 4.2 * scale;
+              doc.text(ref.name, refX, rightY);
+              rightY += 3.8 * scale;
+              doc.text(`${ref.position} — ${ref.company}`, refX, rightY);
+              rightY += 3.8 * scale;
+              doc.text(ref.contact, refX, rightY);
+              rightY += 3.8 * scale;
             });
           }
 
@@ -295,251 +236,156 @@ const CV: React.FC = () => {
         return { doc, endY: y, margin };
       };
 
-      // Measure using scale = 1.0
-      const measureResult = buildPDF(1.0);
-      let scaleLimit = 1.0;
-      const printableHeightLimit = 297 - measureResult.margin;
+      // Measure at scale=1.0
+      const measure = buildPDF(1.0);
+      const totalHeight = measure.endY;
+      const pageHeight = 297;
+      const margin = measure.margin;
+      const availableHeight = pageHeight - margin * 2;
 
-      if (measureResult.endY > printableHeightLimit) {
-        // Linearly calculate perfect scale required to compress within 275mm printable space
-        scaleLimit = printableHeightLimit / measureResult.endY;
-        // Bound minimum scale to 0.58 so the fonts do not shrink to an unreadable state
-        scaleLimit = Math.max(0.58, scaleLimit);
+      let scale = 1.0;
+      if (totalHeight > availableHeight) {
+        scale = availableHeight / totalHeight;
+        if (scale < 0.55) scale = 0.55; // keep minimum readability
       }
 
-      // Generate the optimal single page high-fidelity PDF using our calculated scale factor!
-      const finalResult = buildPDF(scaleLimit);
-
-      // Save document
-      const normalizedName = personalInfo.name.toLowerCase().replace(/\s+/g, '_');
-      finalResult.doc.save(`${normalizedName}_cv.pdf`);
-      toast.success('Professional single-page CV exported successfully!');
+      // Build final PDF with computed scale
+      const final = buildPDF(scale);
+      const fileName = (personalInfo.name || 'cv').toLowerCase().replace(/\s+/g, '_');
+      final.doc.save(`${fileName}_cv.pdf`);
+      toast.success('CV exported as single page!');
     } catch (err) {
-      console.error('[PDF Export Error]', err);
-      toast.error('Direct PDF creation failed. Pls use the Print / Save-to-PDF button.');
+      console.error(err);
+      toast.error('PDF export failed. Use Print > Save as PDF instead.');
     }
   };
 
+  const handlePrint = () => {
+    toast.success('Opening print interface…');
+    setTimeout(() => window.print(), 500);
+  };
+
+  // -------- Screen render (exactly the same layout) --------
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 print:p-0 print:m-0">
-      
-      {/* 1. Print & Style Selector panel (Hides on standard print) */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 print:hidden text-left shadow-sm">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6 print:p-0 print:m-0">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex flex-wrap items-center justify-between gap-4 print:hidden shadow-sm">
         <div className="flex items-center space-x-3">
           <div className="p-2.5 bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 rounded-lg">
             <FileText size={20} />
           </div>
           <div>
-            <h3 className="font-bold text-sm text-slate-900 dark:text-white">Interactive Resume Viewer</h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400">Toggle designs instantly or print/export high-fidelity PDFs.</p>
+            <h3 className="font-bold text-sm text-slate-900 dark:text-white">CV</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Print or download as PDF</p>
           </div>
         </div>
-
-        {/* Style Switches */}
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden text-xs font-semibold">
-            <button
-              onClick={() => setSelectedStyle('modern')}
-              className={`px-3 py-2 transition cursor-pointer ${
-                currentTemplate === 'modern' ? 'bg-slate-900 dark:bg-slate-800 text-white' : 'bg-slate-50 dark:bg-slate-900/40 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
-              }`}
-            >
-              Modern Grid
-            </button>
-            <button
-              onClick={() => setSelectedStyle('classic')}
-              className={`px-3 py-2 transition cursor-pointer ${
-                currentTemplate === 'classic' ? 'bg-slate-900 dark:bg-slate-800 text-white' : 'bg-slate-50 dark:bg-slate-900/40 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
-              }`}
-            >
-              Classic Corporate
-            </button>
-            <button
-              onClick={() => setSelectedStyle('creative')}
-              className={`px-3 py-2 transition cursor-pointer ${
-                currentTemplate === 'creative' ? 'bg-slate-900 dark:bg-slate-800 text-white' : 'bg-slate-50 dark:bg-slate-900/40 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
-              }`}
-            >
-              Creative Tinted
-            </button>
-          </div>
-
+        <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={handleDownloadPDF}
-            className="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-xs font-bold text-white rounded-lg shadow-xs transition cursor-pointer"
+            className="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-xs font-bold text-white rounded-lg shadow transition"
           >
-            <Download size={13} className="mr-1.5" />
-            Download PDF
+            <Download size={13} className="mr-1.5" /> Download PDF
           </button>
-
           <button
             onClick={handlePrint}
-            className="inline-flex items-center px-4 py-2 bg-slate-800 hover:bg-slate-950 text-xs font-bold text-white rounded-lg shadow-xs transition cursor-pointer"
+            className="inline-flex items-center px-4 py-2 bg-slate-800 hover:bg-slate-950 text-xs font-bold text-white rounded-lg shadow transition"
           >
-            <Printer size={13} className="mr-1.5" />
-            Print CV
+            <Printer size={13} className="mr-1.5" /> Print CV
           </button>
         </div>
       </div>
 
-      {/* 2. MASTER PRINTABLE CV CONTAINER */}
       <div
-        id="printable-cv-layout"
-        className={`bg-white dark:bg-slate-900 border rounded-2xl p-8 sm:p-12 text-left relative overflow-hidden transition-all duration-300 print:border-none print:p-0 print:shadow-none shadow-sm ${
-          currentTemplate === 'modern' ? 'border-slate-200 dark:border-slate-800' : ''
-        } ${
-          currentTemplate === 'classic' ? 'border-slate-300 dark:border-slate-700 font-serif' : 'font-sans'
-        } ${
-          currentTemplate === 'creative' ? 'border-amber-200 dark:border-amber-900 bg-amber-50/5 dark:bg-amber-950/5' : ''
-        }`}
+        id="printable-cv"
+        className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 sm:p-12 print:border-none print:p-0 print:shadow-none shadow-sm"
       >
-        {/* Creative Top Accent Line */}
-        {currentTemplate === 'creative' && (
-          <div className="absolute top-0 inset-x-0 h-2 bg-gradient-to-r from-amber-400 via-blue-500 to-indigo-600"></div>
-        )}
-
-        {/* ======================================= */}
-        {/* CV HEADER - PERSONAL DETAILS            */}
-        {/* ======================================= */}
-        <div className={`space-y-6 pb-8 border-b ${
-          currentTemplate === 'classic' ? 'text-center border-slate-300 dark:border-slate-700' : 'border-slate-100 dark:border-slate-800'
-        }`}>
-          {/* Main Title Metadata */}
-          <div className="space-y-2">
-            <h1 className={`font-extrabold tracking-tight text-slate-900 dark:text-white ${
-              currentTemplate === 'classic' ? 'text-4xl sm:text-5xl font-bold' : 'text-3xl sm:text-4xl'
-            } ${currentTemplate === 'creative' ? 'text-blue-900 dark:text-blue-400' : ''}`}>
-              {personalInfo.name}
-            </h1>
-            <p className={`text-md sm:text-lg font-bold ${
-              currentTemplate === 'creative' ? 'text-amber-600 dark:text-amber-400' : 'text-blue-600'
-            }`}>
-              {personalInfo.title}
-            </p>
+        <div className="pb-6 border-b border-slate-200 dark:border-slate-700">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">
+            {personalInfo.name}
+          </h1>
+          <div className="mt-1 text-sm sm:text-base font-semibold text-blue-600 dark:text-blue-400">
+            {personalInfo.title}
+            <span className="text-slate-400 dark:text-slate-500 font-normal mx-2">|</span>
+            <span className="text-slate-600 dark:text-slate-300 font-normal">
+              {[
+                personalInfo.address,
+                personalInfo.phone,
+                personalInfo.email,
+                personalInfo.website?.replace(/^https?:\/\//i, '')
+              ].filter(Boolean).join(' | ')}
+            </span>
           </div>
-
-          {/* Quick Contact Links */}
-          <div className={`flex flex-wrap text-xs text-slate-500 dark:text-slate-400 gap-y-3 gap-x-6 leading-relaxed ${
-            currentTemplate === 'classic' ? 'justify-center' : ''
-          }`}>
-            <span className="inline-flex items-center">
-              <Mail size={13} className="mr-1.5 text-slate-400 dark:text-slate-500" />
-              <a href={`mailto:${personalInfo.email}`} className="hover:underline text-slate-600 dark:text-slate-300">{personalInfo.email}</a>
-            </span>
-            <span className="inline-flex items-center">
-              <Phone size={13} className="mr-1.5 text-slate-400 dark:text-slate-500" />
-              <span className="text-slate-600 dark:text-slate-300">{personalInfo.phone}</span>
-            </span>
-            <span className="inline-flex items-center">
-              <MapPin size={13} className="mr-1.5 text-slate-400 dark:text-slate-500" />
-              <span className="text-slate-600 dark:text-slate-300">{personalInfo.address}</span>
-            </span>
-            {personalInfo.website && (
-              <span className="inline-flex items-center">
-                <Globe size={13} className="mr-1.5 text-slate-400 dark:text-slate-500" />
-                <a href={personalInfo.website} target="_blank" rel="noopener noreferrer" className="hover:underline text-slate-600 dark:text-slate-300 flex">
-                  {personalInfo.website.replace(/^https?:\/\//i, '')}
-                </a>
-              </span>
-            )}
-          </div>
-          
-          <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-4xl whitespace-pre-line font-normal">
-            {personalInfo.summary}
-          </p>
         </div>
 
-        {/* ======================================= */}
-        {/* CV BODY - SECTIONS FLOW                 */}
-        {/* ======================================= */}
-        <div className={`grid grid-cols-1 gap-10 pt-8 ${
-          currentTemplate === 'modern' ? 'lg:grid-cols-12' : 'lg:grid-cols-1'
-        }`}>
-          {/* Left Column (Modern uses 8 cols, others cover full) */}
-          <div className={`${currentTemplate === 'modern' ? 'lg:col-span-8' : ''} space-y-10`}>
+        {personalInfo.summary && (
+          <div className="py-5 text-sm text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-line">
+            {personalInfo.summary}
+          </div>
+        )}
+
+        {skills && skills.length > 0 && (
+          <div className="py-3">
+            <h2 className="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wide border-b border-slate-200 dark:border-slate-700 pb-2">
+              Core Skills
+            </h2>
+            <div className="mt-3 space-y-2 text-sm text-slate-700 dark:text-slate-300">
+              {skills.map((cat, idx) => (
+                <p key={idx}>
+                  <span className="font-semibold">{cat.category}:</span>{' '}
+                  {cat.items.join(', ')}
+                </p>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {sections && sections.length > 0 && (
+          <div className="space-y-8 pt-4">
             {sections.map((section) => (
-              <div key={section.id} className="space-y-5 text-left">
-                <h2 className={`font-bold tracking-tight text-slate-900 dark:text-white border-b pb-2 uppercase ${
-                  currentTemplate === 'classic' ? 'text-lg border-slate-300 dark:border-slate-700 text-center font-bold tracking-wider' : 'text-sm'
-                } ${currentTemplate === 'creative' ? 'text-indigo-900 dark:text-indigo-400 border-indigo-100 dark:border-indigo-900/30' : 'border-slate-105 dark:border-slate-800'}`}>
+              <div key={section.id}>
+                <h2 className="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wide border-b border-slate-200 dark:border-slate-700 pb-2">
                   {section.title}
                 </h2>
-                
-                {section.content && (
-                  <p className="text-xs text-slate-500 dark:text-slate-405 leading-relaxed whitespace-pre-line">
-                    {section.content}
-                  </p>
-                )}
-
-                <div className="space-y-6">
+                <div className="mt-4 space-y-6">
                   {section.items.map((item, idx) => (
-                    <div key={idx} className="space-y-1.5 text-left">
-                      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1.5">
-                        <h3 className="text-sm font-bold text-slate-900 dark:text-white flex flex-wrap items-center gap-1.5">
-                          <span>{item.title}</span>{' '}
-                          <span className={`text-xs font-semibold ${
-                            currentTemplate === 'creative' ? 'text-amber-600 dark:text-amber-450' : 'text-blue-600 dark:text-blue-400'
-                          }`}>
-                            &mdash; {item.subtitle}
-                          </span>
-                          {(item.githubUrl || item.websiteUrl) && (
-                            <span className="inline-flex items-center gap-2 ml-1.5 py-0.5 px-1.5 bg-slate-100 dark:bg-slate-800 rounded-md">
-                              {item.githubUrl && (
-                                <a
-                                  href={item.githubUrl}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition"
-                                  title="View GitHub Repository"
-                                >
-                                  <Github size={12} />
-                                </a>
-                              )}
-                              {item.websiteUrl && (
-                                <a
-                                  href={item.websiteUrl}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-slate-500 hover:text-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400 transition"
-                                  title="View Live Website / Project"
-                                >
-                                  <Globe size={12} />
-                                </a>
-                              )}
+                    <div key={idx} className="space-y-1">
+                      <div className="flex flex-wrap items-baseline justify-between">
+                        <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                          {item.title}
+                          {item.subtitle && (
+                            <span className="font-semibold text-slate-600 dark:text-slate-400">
+                              {' — '}{item.subtitle}
                             </span>
                           )}
                         </h3>
-                        <span className="text-xs font-semibold text-slate-550 dark:text-slate-450 sm:text-right whitespace-nowrap">
-                          {item.date}
-                        </span>
+                        {item.date && (
+                          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                            {item.date}
+                          </span>
+                        )}
                       </div>
 
                       {item.description && (
-                        <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-normal whitespace-pre-line">
+                        <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-line">
                           {item.description}
                         </p>
                       )}
 
                       {item.highlights && (
-                        <ul className="list-disc pl-4 space-y-1 mt-1.5 text-slate-500 dark:text-slate-400">
+                        <ul className="list-disc pl-5 space-y-0.5 text-sm text-slate-600 dark:text-slate-300">
                           {item.highlights.split('\n').map((line, hidx) => {
                             const trimmed = line.replace(/^[•\s\-*]+/, '').trim();
                             if (!trimmed) return null;
-                            return (
-                              <li key={hidx} className="text-xs leading-relaxed font-normal">
-                                {trimmed}
-                              </li>
-                            );
+                            return <li key={hidx}>{trimmed}</li>;
                           })}
                         </ul>
                       )}
 
                       {item.skills && (
-                        <div className="flex flex-wrap gap-1.5 pt-1.5">
+                        <div className="flex flex-wrap gap-1.5 pt-1">
                           {item.skills.split(',').map((skill) => (
                             <span
                               key={skill}
-                              className="px-1.5 py-0.5 bg-slate-50 dark:bg-slate-800 border border-slate-205 dark:border-slate-705 rounded text-[9px] font-bold text-slate-600 dark:text-slate-300 uppercase"
+                              className="px-1.5 py-0.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded text-[10px] font-bold text-slate-600 dark:text-slate-300 uppercase"
                             >
                               {skill.trim()}
                             </span>
@@ -552,77 +398,45 @@ const CV: React.FC = () => {
               </div>
             ))}
           </div>
+        )}
 
-          {/* Right Column (Modern utilities sidebar / Others Append to bottom) */}
-          <div className={`${
-            currentTemplate === 'modern'
-              ? 'lg:col-span-4 border-l border-slate-100 dark:border-slate-800 lg:pl-8 space-y-8'
-              : 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 border-t border-slate-100 dark:border-slate-800 pt-8'
-          }`}>
-            
-            {/* 1. Categorized Technical Skills */}
-            {skills && skills.length > 0 && (
-              <div className="space-y-4 text-left">
-                <h3 className={`font-bold tracking-tight text-slate-900 dark:text-white uppercase ${
-                  currentTemplate === 'classic' ? 'text-sm font-semibold' : 'text-xs'
-                } ${currentTemplate === 'creative' ? 'text-blue-900 dark:text-blue-400 border-b border-blue-50 dark:border-blue-900/30 pb-1' : ''}`}>
-                  Capacities
+        {(languages?.length > 0 || references?.length > 0) && (
+          <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-6 border-t border-slate-200 dark:border-slate-700 pt-6">
+            {languages?.length > 0 && (
+              <div>
+                <h3 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                  Languages
                 </h3>
-                <div className="space-y-4">
-                  {skills.map((cat, sidx) => (
-                    <div key={sidx} className="space-y-1">
-                      <p className="text-xs font-extrabold text-slate-700 dark:text-slate-300">{cat.category}</p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                        {cat.items.join(', ')}
-                      </p>
+                <div className="mt-2 space-y-1 text-sm text-slate-700 dark:text-slate-300">
+                  {languages.map((lang, i) => (
+                    <div key={i} className="flex justify-between">
+                      <span>{lang.name}</span>
+                      <span className="text-slate-500 dark:text-slate-400">{lang.level}</span>
                     </div>
                   ))}
                 </div>
               </div>
             )}
-
-            {/* 2. Languages */}
-            {languages && languages.length > 0 && (
-              <div className="space-y-4 text-left">
-                <h3 className={`font-bold tracking-tight text-slate-900 dark:text-white uppercase ${
-                  currentTemplate === 'classic' ? 'text-sm font-semibold' : 'text-xs'
-                } ${currentTemplate === 'creative' ? 'text-blue-900 dark:text-blue-400 border-b border-blue-50 dark:border-blue-900/30 pb-1' : ''}`}>
-                  Spoken Languages
-                </h3>
-                <div className="grid grid-cols-1 gap-2.5">
-                  {languages.map((lang, lidx) => (
-                    <div key={lidx} className="flex justify-between text-xs font-medium">
-                      <span className="text-slate-800 dark:text-slate-300">{lang.name}</span>
-                      <span className="text-slate-400 dark:text-slate-450 font-normal">{lang.level}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* 3. Professional References */}
-            {references && references.length > 0 && (
-              <div className="space-y-4 text-left">
-                <h3 className={`font-bold tracking-tight text-slate-900 dark:text-white uppercase ${
-                  currentTemplate === 'classic' ? 'text-sm font-semibold' : 'text-xs'
-                } ${currentTemplate === 'creative' ? 'text-blue-900 dark:text-blue-400 border-b border-blue-50 dark:border-blue-900/30 pb-1' : ''}`}>
+            {references?.length > 0 && (
+              <div>
+                <h3 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
                   References
                 </h3>
-                <div className="space-y-4.5">
-                  {references.map((ref, ridx) => (
-                    <div key={ridx} className="space-y-0.5 text-xs">
-                      <p className="font-extrabold text-slate-800 dark:text-slate-200">{ref.name}</p>
-                      <p className="text-slate-550 dark:text-slate-400 text-[11px] font-medium leading-tight">
-                        {ref.position} &mdash; <span className="font-semibold text-slate-600 dark:text-slate-300">{ref.company}</span>
+                <div className="mt-2 space-y-3 text-sm text-slate-700 dark:text-slate-300">
+                  {references.map((ref, i) => (
+                    <div key={i}>
+                      <p className="font-semibold">{ref.name}</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                        {ref.position} — {ref.company}
                       </p>
-                      <p className="text-slate-400 dark:text-slate-500 text-[10px] select-all font-mono">{ref.contact}</p>
+                      <p className="text-xs text-slate-400 dark:text-slate-500">{ref.contact}</p>
                     </div>
                   ))}
                 </div>
               </div>
             )}
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

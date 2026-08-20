@@ -165,8 +165,8 @@
       "title": "Footsal Booking System",
       "description": "An interactive sports arena booking application with real-time calendar reservations and payment gateway endpoints.",
       "image": {
-        "url": "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&q=80&w=600",
-        "publicId": "local_footsal_booking"
+        "url": "https://res.cloudinary.com/manojadmin/image/upload/v1782793312/portfolio/uluh6lovp5wipvsiaaac.png",
+        "publicId": "portfolio/uluh6lovp5wipvsiaaac"
       },
       "technologies": [
         "React.js",
@@ -212,7 +212,7 @@
         "Redis",
         "React Query"
       ],
-      "liveUrl": "",
+      "liveUrl": "https://manoj-portfolio-7psg.onrender.com/",
       "githubUrl": "https://github.com/Manoj-Sunar/My-Portfolio",
       "category": "Web Applications",
       "featured": false,
@@ -234,34 +234,6 @@
     }
   ],
   "certificates": [
-    {
-      "id": "cert_1782058740689",
-      "title": "B.Sc CSIT Marksheet",
-      "issuer": "Tribhuvan University",
-      "issueDate": "2020-05-20",
-      "expiryDate": "",
-      "credentialId": "",
-      "credentialUrl": "",
-      "image": {
-        "url": "https://res.cloudinary.com/manojadmin/image/upload/v1782058370/portfolio/telux5rohbl1qqd82fyu.jpg",
-        "publicId": "portfolio/telux5rohbl1qqd82fyu"
-      },
-      "order": 1
-    },
-    {
-      "id": "cert_1782116123634",
-      "title": "B.Sc CSIT Marksheet",
-      "issuer": "Tribhuvan University",
-      "issueDate": "2020-05-07",
-      "expiryDate": "",
-      "credentialId": "",
-      "credentialUrl": "",
-      "image": {
-        "url": "https://res.cloudinary.com/manojadmin/image/upload/v1782116028/portfolio/v65texkkhf63kltkjh9m.jpg",
-        "publicId": "portfolio/v65texkkhf63kltkjh9m"
-      },
-      "order": 2
-    },
     {
       "id": "cert_1782116283283",
       "title": "Internship Completion",
@@ -289,6 +261,20 @@
         "publicId": "portfolio/t2msfojarm2q4kaeutkd"
       },
       "order": 4
+    },
+    {
+      "id": "cert_1784709058710",
+      "title": "Bsc CsIT Transcript",
+      "issuer": "Tribhuvan University",
+      "issueDate": "2026-03-22",
+      "expiryDate": "",
+      "credentialId": "",
+      "credentialUrl": "",
+      "image": {
+        "url": "https://res.cloudinary.com/manojadmin/image/upload/v1784708989/portfolio/oxzbbchwlflbsv7zhc3e.jpg",
+        "publicId": "portfolio/oxzbbchwlflbsv7zhc3e"
+      },
+      "order": 5
     }
   ],
   "about": {
@@ -359,8 +345,8 @@
       "phone": "9764617689",
       "address": "Pokhara / Kathmandau, Nepal",
       "website": "https://github.com/Manoj-Sunar",
-      "title": "MERN Developer || Full Stack AI Developer",
-      "summary": "I build web applications that don't just work they empower. As a MERN Stack Developer, I specialize in creating content manageable platforms with intuitive admin panels, secure authentication, and optimized performance. From financial apps to AI platforms, I've delivered production-ready solutions in every project I've touched. My latest creation? A complete church management system where non-technical staff can manage sermons, events, and ministries effortlessly. I believe technology should serve people, not complicate their lives."
+      "title": "Full Stack Software Engineer | React.js | Next.js | Node.js | NestJS | TypeScript | MongoDB | Redis | Docker",
+      "summary": "Full Stack Software Engineer with experience developing scalable web applications using React.js, Next.js, Node.js, Express.js, NestJS, TypeScript, MongoDB, Redis, Docker, and REST APIs. Experienced in CMS platforms, authentication systems, performance optimization, and responsive UI development. Passionate about building secure, production-ready applications and solving real-world business problems."
     },
     "sections": [
       {
@@ -372,7 +358,7 @@
             "title": "Full Stack Developer Intern",
             "subtitle": "Lumino Technology pvt. ltd",
             "date": "27 march 2025 - 5 june 2025 ( for academic only )",
-            "description": "• Developed Lumino Finance App as a full stack developer, working on both frontend and backend features.\n• Created Chamling Tour and Travel website with responsive UI and user-friendly design (frontend only).\n• Worked on Geck Gears eCommerce (frontend only), building product pages and layouts.\n• Developed Kinmel eCommerce website (frontend only) with clean UI and smooth user experience.",
+            "description": "• Developed and maintained full-stack financial application using React.js, Node.js, Express.js, and MongoDB.\n• Implemented REST APIs and responsive UI components.\n• Improved application performance and user experience through optimized frontend architecture.",
             "skills": "React.js, Node.js, Express.js, MongoDB, Tailwind CSS, Bootstrap",
             "githubUrl": "",
             "websiteUrl": "",
@@ -449,7 +435,7 @@
             "description": "Built a full-stack portfolio CMS with React.js frontend and Node.js backend, featuring dual database persistence with MongoDB and local JSON storage, multi-layer Redis caching, OTP-based two-factor authentication, hybrid Cloudinary/local media management, and complete CRUD operations for dynamic content management with React Query for seamless server-state synchronization",
             "skills": "( React + Vite ) , Node JS, Javascript, Typescript, Redis, MongoDB Atlas, React Query, Cloudinery",
             "githubUrl": "https://github.com/Manoj-Sunar/My-Portfolio",
-            "websiteUrl": "",
+            "websiteUrl": "https://manoj-portfolio-7psg.onrender.com/",
             "highlights": ". Dual database persistence with automatic MongoDB and local JSON file synchronization, plus intelligent failover.\n Multi-layer caching with Redis and in-memory fallback, featuring pattern-based instant cache invalidation.\nTwo-factor password recovery with OTP verification via email for enterprise-grade security.\nComplete Headless CMS with full CRUD operations for managing projects, education, certificates, about sections, and CV/resume content dynamically."
           }
         ]
@@ -531,6 +517,26 @@
     "template": "modern"
   },
   "recentActivity": [
+    "[7/29/2026, 7:57:45 AM] CV content and styling template updated.",
+    "[7/29/2026, 7:57:44 AM] CV content and styling template updated.",
+    "[7/29/2026, 7:57:43 AM] CV content and styling template updated.",
+    "[7/29/2026, 7:56:16 AM] CV content and styling template updated.",
+    "[7/29/2026, 7:56:10 AM] CV content and styling template updated.",
+    "[7/29/2026, 7:52:14 AM] CV content and styling template updated.",
+    "[7/29/2026, 7:51:19 AM] Admin logged in successfully: Manoj Sunar",
+    "[7/22/2026, 8:30:58 AM] Uploaded/created certificate: \"Bsc CsIT Transcript\" (issued by Tribhuvan University)",
+    "[7/22/2026, 6:17:02 AM] Deleted certificate record: \"B.Sc CSIT Marksheet\"",
+    "[7/22/2026, 6:16:58 AM] Deleted certificate record: \"B.Sc CSIT Marksheet\"",
+    "[7/22/2026, 6:16:33 AM] Admin logged in successfully: Manoj Sunar",
+    "[7/7/2026, 12:47:53 PM] Admin logged in successfully: Manoj Sunar",
+    "[6/30/2026, 4:21:56 AM] Updated project: \"Footsal Booking System\"",
+    "[6/28/2026, 4:52:23 PM] Portfolio projects display list reordered.",
+    "[6/28/2026, 4:52:21 PM] Portfolio projects display list reordered.",
+    "[6/28/2026, 4:52:21 PM] Portfolio projects display list reordered.",
+    "[6/28/2026, 4:52:19 PM] Portfolio projects display list reordered.",
+    "[6/25/2026, 2:43:20 PM] CV content and styling template updated.",
+    "[6/25/2026, 2:41:17 PM] Updated project: \"Portfolio Site ( CMS )\"",
+    "[6/25/2026, 2:32:28 PM] Admin logged in successfully: Manoj Sunar",
     "[24/06/2026, 19:18:47] CV content and styling template updated.",
     "[24/06/2026, 19:18:41] CV content and styling template updated.",
     "[24/06/2026, 19:17:59] CV content and styling template updated.",
@@ -540,26 +546,6 @@
     "[22/06/2026, 18:45:53] Deleted project: \"QR Based Food Order\"",
     "[22/06/2026, 18:45:27] Created project: \"QR Based Food Order\"",
     "[22/06/2026, 18:44:23] Admin logged in successfully: Manoj Sunar",
-    "[6/22/2026, 8:20:56 AM] Updated certificate record: \"Internship Completion\"",
-    "[6/22/2026, 8:20:45 AM] Updated certificate record: \"Frontend Web Development Workshop\"",
-    "[6/22/2026, 8:20:32 AM] Uploaded/created certificate: \"Frontend Web Development Workshop\" (issued by MacIT Hub)",
-    "[6/22/2026, 8:18:03 AM] Uploaded/created certificate: \"Internship Completion\" (issued by Lumino Technology Pvt. Ltd.)",
-    "[6/22/2026, 8:15:23 AM] Uploaded/created certificate: \"B.Sc CSIT Marksheet\" (issued by Tribhuvan University)",
-    "[6/21/2026, 4:19:00 PM] Uploaded/created certificate: \"B.Sc CSIT Marksheet\" (issued by Tribhuvan University)",
-    "[6/19/2026, 4:41:37 PM] CV content and styling template updated.",
-    "[6/19/2026, 4:41:21 PM] CV content and styling template updated.",
-    "[6/19/2026, 4:34:47 PM] CV content and styling template updated.",
-    "[6/19/2026, 4:26:40 PM] Portfolio projects display list reordered.",
-    "[6/19/2026, 4:26:39 PM] Portfolio projects display list reordered.",
-    "[6/19/2026, 3:37:44 PM] CV content and styling template updated.",
-    "[6/19/2026, 3:37:39 PM] CV content and styling template updated.",
-    "[6/19/2026, 3:37:10 PM] CV content and styling template updated.",
-    "[6/19/2026, 3:36:45 PM] CV content and styling template updated.",
-    "[6/19/2026, 3:36:39 PM] CV content and styling template updated.",
-    "[6/19/2026, 3:32:28 PM] CV content and styling template updated.",
-    "[6/19/2026, 3:32:27 PM] CV content and styling template updated.",
-    "[6/19/2026, 3:32:26 PM] CV content and styling template updated.",
-    "[6/19/2026, 3:32:24 PM] CV content and styling template updated.",
-    "[6/19/2026, 3:32:23 PM] CV content and styling template updated."
+    "[6/22/2026, 8:20:56 AM] Updated certificate record: \"Internship Completion\""
   ]
 }
