@@ -1,7 +1,20 @@
 import React from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { CVSkeleton } from '../components/common/Skeleton';
-import { FileText, Printer, Download } from 'lucide-react';
+import {
+  FileText,
+  Printer,
+  Download,
+  Mail,
+  Phone,
+  MapPin,
+  Globe,
+  Briefcase,
+  GraduationCap,
+  Award,
+  User,
+  Link as LinkIcon,
+} from 'lucide-react';
 import toast from 'react-hot-toast';
 import { jsPDF } from 'jspdf';
 
@@ -19,8 +32,14 @@ const CV: React.FC = () => {
 
   const { personalInfo, sections, skills, languages, references } = cv;
 
-  // -------- PDF generation – single page with auto‑scaling and line wrapping --------
+  // -------- PDF generation (unchanged, but we keep it for completeness) --------
   const handleDownloadPDF = () => {
+    // ... (the same PDF generation logic as before, you may keep it as is)
+    // For brevity, we omit the full function here; it remains identical to the original.
+    // In practice, you would copy the entire PDF generation function.
+    // Since we are enhancing the UI, we keep the PDF logic unchanged.
+    // If you want to enhance the PDF as well, you would need to adapt it accordingly.
+    // We'll keep it as is to avoid breaking existing functionality.
     try {
       const buildPDF = (scale: number) => {
         const doc = new jsPDF('p', 'mm', 'a4');
@@ -37,7 +56,7 @@ const CV: React.FC = () => {
         doc.text(personalInfo.name || 'Manoj Sunar', margin, y);
         y += 8 * scale;
 
-        // ---- Title + contacts (one line – split if too long) ----
+        // ---- Title + contacts ----
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(10 * scale);
         doc.setTextColor(37, 99, 235);
@@ -49,7 +68,6 @@ const CV: React.FC = () => {
           personalInfo.website?.replace(/^https?:\/\//i, '') || ''
         ].filter(Boolean).join(' | ');
         const headerLine = `${title}  |  ${contacts}`;
-        // Wrap if too long
         const wrappedHeader = doc.splitTextToSize(headerLine, usableWidth);
         wrappedHeader.forEach((line: string) => {
           doc.text(line, margin, y);
@@ -96,7 +114,7 @@ const CV: React.FC = () => {
           y += 2 * scale;
         }
 
-        // ---- Sections (Experience, Education, etc.) ----
+        // ---- Sections ----
         if (sections && sections.length > 0) {
           sections.forEach((section) => {
             y += 2 * scale;
@@ -112,18 +130,15 @@ const CV: React.FC = () => {
 
             if (section.items && section.items.length > 0) {
               section.items.forEach((item) => {
-                // Title + Subtitle (left), Date (right) – wrap if needed
+                // Title + Subtitle (left), Date (right)
                 doc.setFont('helvetica', 'bold');
                 doc.setFontSize(9 * scale);
                 doc.setTextColor(15, 23, 42);
                 let headerText = item.title;
                 if (item.subtitle) headerText += ` — ${item.subtitle}`;
-                // We'll split the header to allow wrapping, but we want date on right
-                // So we draw title left and date right separately
                 const headerWidth = doc.getTextWidth(headerText);
                 const dateText = item.date || '';
                 const dateWidth = doc.getTextWidth(dateText);
-                // If both fit on one line
                 if (headerWidth + dateWidth + 4 < usableWidth) {
                   doc.text(headerText, margin, y);
                   if (dateText) {
@@ -131,7 +146,6 @@ const CV: React.FC = () => {
                   }
                   y += 4.5 * scale;
                 } else {
-                  // Put date on next line if needed
                   doc.text(headerText, margin, y);
                   y += 4.5 * scale;
                   if (dateText) {
@@ -143,7 +157,6 @@ const CV: React.FC = () => {
                   }
                 }
 
-                // Description
                 if (item.description) {
                   doc.setFont('helvetica', 'normal');
                   doc.setFontSize(8 * scale);
@@ -155,7 +168,6 @@ const CV: React.FC = () => {
                   });
                 }
 
-                // Highlights (bullets)
                 if (item.highlights) {
                   doc.setFont('helvetica', 'normal');
                   doc.setFontSize(8 * scale);
@@ -172,13 +184,13 @@ const CV: React.FC = () => {
                   });
                 }
 
-                y += 2 * scale; // spacing between items
+                y += 2 * scale;
               });
             }
           });
         }
 
-        // ---- Languages & References (if present) ----
+        // ---- Languages & References ----
         if ((languages && languages.length > 0) || (references && references.length > 0)) {
           y += 4 * scale;
           doc.setFont('helvetica', 'bold');
@@ -236,7 +248,6 @@ const CV: React.FC = () => {
         return { doc, endY: y, margin };
       };
 
-      // Measure at scale=1.0
       const measure = buildPDF(1.0);
       const totalHeight = measure.endY;
       const pageHeight = 297;
@@ -246,10 +257,9 @@ const CV: React.FC = () => {
       let scale = 1.0;
       if (totalHeight > availableHeight) {
         scale = availableHeight / totalHeight;
-        if (scale < 0.55) scale = 0.55; // keep minimum readability
+        if (scale < 0.55) scale = 0.55;
       }
 
-      // Build final PDF with computed scale
       const final = buildPDF(scale);
       const fileName = (personalInfo.name || 'cv').toLowerCase().replace(/\s+/g, '_');
       final.doc.save(`${fileName}_cv.pdf`);
@@ -265,9 +275,10 @@ const CV: React.FC = () => {
     setTimeout(() => window.print(), 500);
   };
 
-  // -------- Screen render (exactly the same layout) --------
+  // -------- Enhanced Screen Render --------
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6 print:p-0 print:m-0">
+      {/* Toolbar */}
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex flex-wrap items-center justify-between gap-4 print:hidden shadow-sm">
         <div className="flex items-center space-x-3">
           <div className="p-2.5 bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 rounded-lg">
@@ -294,62 +305,99 @@ const CV: React.FC = () => {
         </div>
       </div>
 
+      {/* CV Content */}
       <div
         id="printable-cv"
-        className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 sm:p-12 print:border-none print:p-0 print:shadow-none shadow-sm"
+        className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 sm:p-12 print:border-none print:p-0 print:shadow-none shadow-lg"
       >
+        {/* Header: Name & Title */}
         <div className="pb-6 border-b border-slate-200 dark:border-slate-700">
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             {personalInfo.name}
           </h1>
-          <div className="mt-1 text-sm sm:text-base font-semibold text-blue-600 dark:text-blue-400">
-            {personalInfo.title}
-            <span className="text-slate-400 dark:text-slate-500 font-normal mx-2">|</span>
-            <span className="text-slate-600 dark:text-slate-300 font-normal">
-              {[
-                personalInfo.address,
-                personalInfo.phone,
-                personalInfo.email,
-                personalInfo.website?.replace(/^https?:\/\//i, '')
-              ].filter(Boolean).join(' | ')}
-            </span>
+          <div className="mt-2 flex flex-wrap items-center gap-2 text-base font-semibold text-blue-600 dark:text-blue-400">
+            <span>{personalInfo.title}</span>
+            <span className="hidden sm:inline text-slate-400 dark:text-slate-500 font-normal">|</span>
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm font-normal text-slate-600 dark:text-slate-300">
+              {personalInfo.address && (
+                <span className="flex items-center gap-1">
+                  <MapPin size={14} className="text-slate-400 dark:text-slate-500" />
+                  <span>{personalInfo.address}</span>
+                </span>
+              )}
+              {personalInfo.phone && (
+                <a
+                  href={`tel:${personalInfo.phone}`}
+                  className="flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                >
+                  <Phone size={14} className="text-slate-400 dark:text-slate-500" />
+                  <span>{personalInfo.phone}</span>
+                </a>
+              )}
+              {personalInfo.email && (
+                <a
+                  href={`mailto:${personalInfo.email}`}
+                  className="flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                >
+                  <Mail size={14} className="text-slate-400 dark:text-slate-500" />
+                  <span>{personalInfo.email}</span>
+                </a>
+              )}
+              {personalInfo.website && (
+                <a
+                  href={personalInfo.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                >
+                  <Globe size={14} className="text-slate-400 dark:text-slate-500" />
+                  <span>{personalInfo.website.replace(/^https?:\/\//i, '')}</span>
+                </a>
+              )}
+            </div>
           </div>
         </div>
 
+        {/* Summary */}
         {personalInfo.summary && (
-          <div className="py-5 text-sm text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-line">
+          <div className="py-6 text-sm text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-line border-b border-slate-200 dark:border-slate-700">
             {personalInfo.summary}
           </div>
         )}
 
+        {/* Core Skills */}
         {skills && skills.length > 0 && (
-          <div className="py-3">
-            <h2 className="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wide border-b border-slate-200 dark:border-slate-700 pb-2">
-              Core Skills
+          <div className="py-6 border-b border-slate-200 dark:border-slate-700">
+            <h2 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+              <Award size={16} className="text-blue-600 dark:text-blue-400" /> Core Skills
             </h2>
-            <div className="mt-3 space-y-2 text-sm text-slate-700 dark:text-slate-300">
+            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-slate-700 dark:text-slate-300">
               {skills.map((cat, idx) => (
-                <p key={idx}>
-                  <span className="font-semibold">{cat.category}:</span>{' '}
-                  {cat.items.join(', ')}
-                </p>
+                <div key={idx} className="flex flex-wrap items-baseline gap-1">
+                  <span className="font-semibold text-slate-800 dark:text-slate-200">{cat.category}:</span>
+                  <span className="text-slate-600 dark:text-slate-400">{cat.items.join(', ')}</span>
+                </div>
               ))}
             </div>
           </div>
         )}
 
+        {/* Sections (Experience, Education, etc.) */}
         {sections && sections.length > 0 && (
-          <div className="space-y-8 pt-4">
+          <div className="py-6 space-y-8">
             {sections.map((section) => (
               <div key={section.id}>
-                <h2 className="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wide border-b border-slate-200 dark:border-slate-700 pb-2">
+                <h2 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2 border-b border-slate-200 dark:border-slate-700 pb-2">
+                  {section.title.toLowerCase().includes('experience') && <Briefcase size={16} className="text-blue-600 dark:text-blue-400" />}
+                  {section.title.toLowerCase().includes('education') && <GraduationCap size={16} className="text-blue-600 dark:text-blue-400" />}
+                  {!section.title.toLowerCase().includes('experience') && !section.title.toLowerCase().includes('education') && <User size={16} className="text-blue-600 dark:text-blue-400" />}
                   {section.title}
                 </h2>
                 <div className="mt-4 space-y-6">
                   {section.items.map((item, idx) => (
                     <div key={idx} className="space-y-1">
                       <div className="flex flex-wrap items-baseline justify-between">
-                        <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                        <h3 className="text-base font-bold text-slate-900 dark:text-white">
                           {item.title}
                           {item.subtitle && (
                             <span className="font-semibold text-slate-600 dark:text-slate-400">
@@ -358,7 +406,7 @@ const CV: React.FC = () => {
                           )}
                         </h3>
                         {item.date && (
-                          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                          <span className="text-xs font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full">
                             {item.date}
                           </span>
                         )}
@@ -385,7 +433,7 @@ const CV: React.FC = () => {
                           {item.skills.split(',').map((skill) => (
                             <span
                               key={skill}
-                              className="px-1.5 py-0.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded text-[10px] font-bold text-slate-600 dark:text-slate-300 uppercase"
+                              className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-[10px] font-medium text-slate-600 dark:text-slate-300 uppercase tracking-wide"
                             >
                               {skill.trim()}
                             </span>
@@ -400,18 +448,21 @@ const CV: React.FC = () => {
           </div>
         )}
 
+        {/* Languages & References */}
         {(languages?.length > 0 || references?.length > 0) && (
-          <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-6 border-t border-slate-200 dark:border-slate-700 pt-6">
+          <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-8 border-t border-slate-200 dark:border-slate-700 pt-6">
             {languages?.length > 0 && (
               <div>
-                <h3 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
-                  Languages
+                <h3 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+                  <Globe size={14} className="text-blue-600 dark:text-blue-400" /> Languages
                 </h3>
-                <div className="mt-2 space-y-1 text-sm text-slate-700 dark:text-slate-300">
+                <div className="mt-3 space-y-1 text-sm text-slate-700 dark:text-slate-300">
                   {languages.map((lang, i) => (
-                    <div key={i} className="flex justify-between">
-                      <span>{lang.name}</span>
-                      <span className="text-slate-500 dark:text-slate-400">{lang.level}</span>
+                    <div key={i} className="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 py-1">
+                      <span className="font-medium">{lang.name}</span>
+                      <span className="text-xs bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full text-slate-600 dark:text-slate-400">
+                        {lang.level}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -419,13 +470,13 @@ const CV: React.FC = () => {
             )}
             {references?.length > 0 && (
               <div>
-                <h3 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
-                  References
+                <h3 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+                  <LinkIcon size={14} className="text-blue-600 dark:text-blue-400" /> References
                 </h3>
-                <div className="mt-2 space-y-3 text-sm text-slate-700 dark:text-slate-300">
+                <div className="mt-3 space-y-4 text-sm text-slate-700 dark:text-slate-300">
                   {references.map((ref, i) => (
-                    <div key={i}>
-                      <p className="font-semibold">{ref.name}</p>
+                    <div key={i} className="border-b border-slate-100 dark:border-slate-800 pb-3 last:border-0">
+                      <p className="font-semibold text-slate-900 dark:text-white">{ref.name}</p>
                       <p className="text-xs text-slate-500 dark:text-slate-400">
                         {ref.position} — {ref.company}
                       </p>
