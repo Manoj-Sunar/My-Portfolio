@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, LayoutDashboard, User, Briefcase, FileText, GraduationCap, Laptop, Sun, Moon, Award, GitCommit, } from 'lucide-react';
+import { Menu, X, LayoutDashboard, User, Briefcase, FileText, GraduationCap, Laptop, Sun, Moon, Award } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
+import { FaGithub } from "react-icons/fa";
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -21,7 +22,7 @@ const Navbar: React.FC = () => {
     { label: 'Education', path: '/education', icon: GraduationCap },
     { label: 'Certificates', path: '/certificates', icon: Award },
     { label: 'Resume', path: '/cv', icon: FileText },
-    { label: '', path: '/cv', icon: GitCommit },
+    { label: '', path: 'https://github.com/Manoj-Sunar', icon: FaGithub },
   ];
 
   return (
