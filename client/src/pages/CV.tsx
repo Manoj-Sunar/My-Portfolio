@@ -15,9 +15,10 @@ import {
   User,
   Link as LinkIcon,
 } from 'lucide-react';
+import { FaGithub } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 import { jsPDF } from 'jspdf';
-import { FaGithub } from "react-icons/fa";
+
 const CV: React.FC = () => {
   const { cv, isLoading } = usePortfolio();
 
@@ -31,8 +32,11 @@ const CV: React.FC = () => {
   }
 
   const { personalInfo, sections, skills, languages, references } = cv;
+  const GITHUB_URL = 'https://github.com/Manoj-Sunar';
 
-  // ---------- PDF GENERATION – now includes GitHub ----------
+  // ============================================================
+  //  PDF GENERATION – now matches screen design perfectly
+  // ============================================================
   const handleDownloadPDF = () => {
     try {
       const buildPDF = (scale: number) => {
@@ -43,43 +47,79 @@ const CV: React.FC = () => {
         const usableWidth = pageWidth - margin * 2;
         let y = margin;
 
-        // ---- Name ----
+        // ---- Name (larger, bold, slate‑900) ----
         doc.setFont('helvetica', 'bold');
-        doc.setFontSize(22 * scale);
+        doc.setFontSize(24 * scale);
         doc.setTextColor(15, 23, 42);
         doc.text(personalInfo.name || 'Manoj Sunar', margin, y);
-        y += 9 * scale;
+        y += 10 * scale;
 
-        // ---- Title + contact (including GitHub) ----
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(11 * scale);
-        doc.setTextColor(37, 99, 235);
+        // ---- Title (blue, bold) + Contacts (slate‑600, normal) ----
         const title = personalInfo.title || 'Full Stack Developer';
         const contactParts = [];
         if (personalInfo.address) contactParts.push(personalInfo.address);
         if (personalInfo.phone) contactParts.push(personalInfo.phone);
         if (personalInfo.email) contactParts.push(personalInfo.email);
-        if (personalInfo.website) contactParts.push(personalInfo.website.replace(/^https?:\/\//i, ''));
-        // --- NEW: include GitHub if present ---
-        
+        if (personalInfo.website)
+          contactParts.push(personalInfo.website.replace(/^https?:\/\//i, ''));
+        contactParts.push(GITHUB_URL.replace(/^https?:\/\//i, '')); // always include GitHub
         const contacts = contactParts.join('  |  ');
-        const headerLine = `${title}  |  ${contacts}`;
-        const wrappedHeader = doc.splitTextToSize(headerLine, usableWidth);
-        wrappedHeader.forEach((line: string) => {
-          doc.text(line, margin, y);
-          y += 5.5 * scale;
-        });
+
+        // Draw title and contacts on the same line if they fit
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(12 * scale);
+        doc.setTextColor(37, 99, 235); // blue‑600
+        const titleWidth = doc.getTextWidth(title);
+        const separator = '  |  ';
+        const separatorWidth = doc.getTextWidth(separator);
+
+        // Try to fit everything on one line
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(10 * scale);
+        doc.setTextColor(71, 85, 105); // slate‑600
+        const contactsWidth = doc.getTextWidth(contacts);
+        const totalWidth = titleWidth + separatorWidth + contactsWidth;
+
+        if (totalWidth < usableWidth) {
+          // Draw title, then separator, then contacts
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(12 * scale);
+          doc.setTextColor(37, 99, 235);
+          doc.text(title, margin, y);
+          const x = margin + titleWidth;
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(10 * scale);
+          doc.setTextColor(71, 85, 105);
+          doc.text(separator + contacts, x, y);
+          y += 6 * scale;
+        } else {
+          // Not enough width – put contacts on the next line
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(12 * scale);
+          doc.setTextColor(37, 99, 235);
+          doc.text(title, margin, y);
+          y += 6 * scale;
+          // Contacts on next line with a small indent (2mm)
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(9.5 * scale);
+          doc.setTextColor(71, 85, 105);
+          const wrappedContacts = doc.splitTextToSize(contacts, usableWidth - 2);
+          wrappedContacts.forEach((line: string) => {
+            doc.text(line, margin + 2, y);
+            y += 4.5 * scale;
+          });
+        }
         y += 2 * scale;
 
         // ---- Summary ----
         if (personalInfo.summary) {
           doc.setFont('helvetica', 'normal');
-          doc.setFontSize(9 * scale);
+          doc.setFontSize(9.5 * scale);
           doc.setTextColor(71, 85, 105);
           const summaryLines = doc.splitTextToSize(personalInfo.summary, usableWidth);
           summaryLines.forEach((line: string) => {
             doc.text(line, margin, y);
-            y += 4.5 * scale;
+            y += 4.8 * scale;
           });
           y += 3 * scale;
         }
@@ -90,11 +130,11 @@ const CV: React.FC = () => {
           doc.setFontSize(12 * scale);
           doc.setTextColor(15, 23, 42);
           doc.text('CORE SKILLS', margin, y);
-          y += 4.5 * scale;
+          y += 5 * scale;
           doc.setDrawColor(200, 200, 200);
           doc.setLineWidth(0.3 * scale);
           doc.line(margin, y, pageWidth - margin, y);
-          y += 5 * scale;
+          y += 6 * scale;
 
           const colWidth = (usableWidth / 2) - 4;
           const leftX = margin;
@@ -115,7 +155,7 @@ const CV: React.FC = () => {
               doc.setTextColor(51, 65, 85);
               lines.forEach((l: string) => {
                 doc.text(l, x, curY);
-                curY += 4.2 * scale;
+                curY += 4.5 * scale;
               });
               curY += 1.5 * scale;
             });
@@ -124,10 +164,10 @@ const CV: React.FC = () => {
 
           if (leftSkills.length) leftY = renderSkillColumn(leftSkills, leftX, leftY);
           if (rightSkills.length) rightY = renderSkillColumn(rightSkills, rightX, rightY);
-          y = Math.max(leftY, rightY) + 2 * scale;
+          y = Math.max(leftY, rightY) + 3 * scale;
         }
 
-        // ---- Sections ----
+        // ---- Sections (Experience, Education, etc.) ----
         if (sections && sections.length > 0) {
           sections.forEach((section) => {
             y += 2 * scale;
@@ -135,16 +175,17 @@ const CV: React.FC = () => {
             doc.setFontSize(12 * scale);
             doc.setTextColor(15, 23, 42);
             doc.text(section.title.toUpperCase(), margin, y);
-            y += 4.5 * scale;
+            y += 5 * scale;
             doc.setDrawColor(200, 200, 200);
             doc.setLineWidth(0.3 * scale);
             doc.line(margin, y, pageWidth - margin, y);
-            y += 5 * scale;
+            y += 6 * scale;
 
             if (section.items && section.items.length > 0) {
               section.items.forEach((item) => {
+                // Item header: title + subtitle (left), date (right)
                 doc.setFont('helvetica', 'bold');
-                doc.setFontSize(10 * scale);
+                doc.setFontSize(10.5 * scale);
                 doc.setTextColor(15, 23, 42);
                 let headerText = item.title;
                 if (item.subtitle) headerText += ` — ${item.subtitle}`;
@@ -156,10 +197,10 @@ const CV: React.FC = () => {
                   if (dateText) {
                     doc.text(dateText, pageWidth - margin, y, { align: 'right' });
                   }
-                  y += 5 * scale;
+                  y += 5.5 * scale;
                 } else {
                   doc.text(headerText, margin, y);
-                  y += 5 * scale;
+                  y += 5.5 * scale;
                   if (dateText) {
                     doc.setFont('helvetica', 'italic');
                     doc.setFontSize(8.5 * scale);
@@ -169,20 +210,22 @@ const CV: React.FC = () => {
                   }
                 }
 
+                // Description
                 if (item.description) {
                   doc.setFont('helvetica', 'normal');
-                  doc.setFontSize(8.5 * scale);
+                  doc.setFontSize(9 * scale);
                   doc.setTextColor(71, 85, 105);
                   const descLines = doc.splitTextToSize(item.description, usableWidth);
                   descLines.forEach((line: string) => {
                     doc.text(line, margin, y);
-                    y += 4.2 * scale;
+                    y += 4.5 * scale;
                   });
                 }
 
+                // Highlights (bullets)
                 if (item.highlights) {
                   doc.setFont('helvetica', 'normal');
-                  doc.setFontSize(8.5 * scale);
+                  doc.setFontSize(9 * scale);
                   doc.setTextColor(71, 85, 105);
                   const bullets = item.highlights.split('\n').filter((b: string) => b.trim());
                   bullets.forEach((bullet: string) => {
@@ -191,11 +234,12 @@ const CV: React.FC = () => {
                     const bulletLines = doc.splitTextToSize(`• ${trimmed}`, usableWidth - 5);
                     bulletLines.forEach((line: string) => {
                       doc.text(line, margin + 4, y);
-                      y += 4 * scale;
+                      y += 4.2 * scale;
                     });
                   });
                 }
 
+                // Skill tags (as inline chips separated by bullets)
                 if (item.skills) {
                   const skillArray = item.skills.split(',').map(s => s.trim()).filter(Boolean);
                   if (skillArray.length > 0) {
@@ -217,18 +261,18 @@ const CV: React.FC = () => {
           });
         }
 
-        // ---- Languages & References ----
+        // ---- Languages & References (side‑by‑side) ----
         if ((languages && languages.length > 0) || (references && references.length > 0)) {
           y += 4 * scale;
           doc.setFont('helvetica', 'bold');
           doc.setFontSize(12 * scale);
           doc.setTextColor(15, 23, 42);
           doc.text('ADDITIONAL', margin, y);
-          y += 4.5 * scale;
+          y += 5 * scale;
           doc.setDrawColor(200, 200, 200);
           doc.setLineWidth(0.3 * scale);
           doc.line(margin, y, pageWidth - margin, y);
-          y += 5 * scale;
+          y += 6 * scale;
 
           const colWidth = usableWidth / 2 - 4;
           let leftY = y;
@@ -275,7 +319,7 @@ const CV: React.FC = () => {
         return { doc, endY: y, margin };
       };
 
-      // ---- Auto‑scale ----
+      // ---- Auto‑scale to fit one page ----
       const measure = buildPDF(1.0);
       const totalHeight = measure.endY;
       const pageHeight = 297;
@@ -285,7 +329,7 @@ const CV: React.FC = () => {
       let scale = 1.0;
       if (totalHeight > availableHeight) {
         scale = availableHeight / totalHeight;
-        if (scale < 0.55) scale = 0.55;
+        if (scale < 0.55) scale = 0.55; // ensure readability
       }
 
       const final = buildPDF(scale);
@@ -303,7 +347,7 @@ const CV: React.FC = () => {
     setTimeout(() => window.print(), 500);
   };
 
-  // -------- Screen Render (with your custom GitHub link) --------
+  // -------- Screen Render (unchanged, already enhanced) --------
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6 print:p-0 print:m-0">
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex flex-wrap items-center justify-between gap-4 print:hidden shadow-sm">
@@ -369,10 +413,10 @@ const CV: React.FC = () => {
                   <span>{personalInfo.website.replace(/^https?:\/\//i, '')}</span>
                 </a>
               )}
-              <a href="https://github.com/Manoj-Sunar" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                  <FaGithub size={14} className='text-gray-600'/>
-                  <span>https://github.com/Manoj-Sunar</span>
-                </a>
+              <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                <FaGithub size={14} className="text-slate-400 dark:text-slate-500" />
+                <span>{GITHUB_URL.replace(/^https?:\/\//i, '')}</span>
+              </a>
             </div>
           </div>
         </div>
