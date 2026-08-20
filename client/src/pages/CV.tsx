@@ -32,176 +32,191 @@ const CV: React.FC = () => {
 
   const { personalInfo, sections, skills, languages, references } = cv;
 
-  // -------- PDF generation (unchanged, but we keep it for completeness) --------
+  // -------- ENHANCED PDF GENERATION – mirroring the screen design --------
   const handleDownloadPDF = () => {
-    // ... (the same PDF generation logic as before, you may keep it as is)
-    // For brevity, we omit the full function here; it remains identical to the original.
-    // In practice, you would copy the entire PDF generation function.
-    // Since we are enhancing the UI, we keep the PDF logic unchanged.
-    // If you want to enhance the PDF as well, you would need to adapt it accordingly.
-    // We'll keep it as is to avoid breaking existing functionality.
     try {
       const buildPDF = (scale: number) => {
         const doc = new jsPDF('p', 'mm', 'a4');
         const pageWidth = 210;
         const pageHeight = 297;
-        const margin = 12 * scale;
+        const margin = 14 * scale;               // slightly larger margin
         const usableWidth = pageWidth - margin * 2;
         let y = margin;
 
-        // ---- Name ----
+        // ---- Name (larger, bold) ----
         doc.setFont('helvetica', 'bold');
-        doc.setFontSize(20 * scale);
-        doc.setTextColor(15, 23, 42);
+        doc.setFontSize(22 * scale);
+        doc.setTextColor(15, 23, 42);            // slate-900
         doc.text(personalInfo.name || 'Manoj Sunar', margin, y);
-        y += 8 * scale;
+        y += 9 * scale;
 
-        // ---- Title + contacts ----
+        // ---- Title + contact info (with icons simulated by text) ----
         doc.setFont('helvetica', 'bold');
-        doc.setFontSize(10 * scale);
-        doc.setTextColor(37, 99, 235);
+        doc.setFontSize(11 * scale);
+        doc.setTextColor(37, 99, 235);           // blue-600
         const title = personalInfo.title || 'Full Stack Developer';
-        const contacts = [
-          personalInfo.address,
-          personalInfo.phone,
-          personalInfo.email,
-          personalInfo.website?.replace(/^https?:\/\//i, '') || ''
-        ].filter(Boolean).join(' | ');
+        // Build contact string with separators
+        const contactParts = [];
+        if (personalInfo.address) contactParts.push(`📍 ${personalInfo.address}`);
+        if (personalInfo.phone) contactParts.push(`📞 ${personalInfo.phone}`);
+        if (personalInfo.email) contactParts.push(`✉ ${personalInfo.email}`);
+        if (personalInfo.website) contactParts.push(`🌐 ${personalInfo.website.replace(/^https?:\/\//i, '')}`);
+        const contacts = contactParts.join('  |  ');
         const headerLine = `${title}  |  ${contacts}`;
         const wrappedHeader = doc.splitTextToSize(headerLine, usableWidth);
         wrappedHeader.forEach((line: string) => {
           doc.text(line, margin, y);
-          y += 5 * scale;
+          y += 5.5 * scale;
         });
         y += 2 * scale;
 
-        // ---- Summary ----
+        // ---- Summary (normal, lighter) ----
         if (personalInfo.summary) {
           doc.setFont('helvetica', 'normal');
-          doc.setFontSize(8.5 * scale);
-          doc.setTextColor(71, 85, 105);
+          doc.setFontSize(9 * scale);
+          doc.setTextColor(71, 85, 105);         // slate-600
           const summaryLines = doc.splitTextToSize(personalInfo.summary, usableWidth);
           summaryLines.forEach((line: string) => {
             doc.text(line, margin, y);
-            y += 4 * scale;
+            y += 4.5 * scale;
           });
-          y += 2 * scale;
+          y += 3 * scale;
         }
 
         // ---- Core Skills ----
         if (skills && skills.length > 0) {
           doc.setFont('helvetica', 'bold');
-          doc.setFontSize(11 * scale);
+          doc.setFontSize(12 * scale);
           doc.setTextColor(15, 23, 42);
           doc.text('CORE SKILLS', margin, y);
-          y += 4 * scale;
+          y += 4.5 * scale;
           doc.setDrawColor(200, 200, 200);
-          doc.setLineWidth(0.2 * scale);
+          doc.setLineWidth(0.3 * scale);
           doc.line(margin, y, pageWidth - margin, y);
-          y += 4 * scale;
+          y += 5 * scale;
 
           doc.setFont('helvetica', 'normal');
-          doc.setFontSize(8 * scale);
-          doc.setTextColor(51, 65, 85);
+          doc.setFontSize(9 * scale);
+          doc.setTextColor(51, 65, 85);          // slate-700
           skills.forEach((cat) => {
             const line = `${cat.category}: ${cat.items.join(', ')}`;
             const lines = doc.splitTextToSize(line, usableWidth);
             lines.forEach((l: string) => {
               doc.text(l, margin, y);
-              y += 3.8 * scale;
+              y += 4.2 * scale;
             });
           });
-          y += 2 * scale;
+          y += 3 * scale;
         }
 
-        // ---- Sections ----
+        // ---- Sections (Experience, Education, etc.) ----
         if (sections && sections.length > 0) {
           sections.forEach((section) => {
+            // Section heading
             y += 2 * scale;
             doc.setFont('helvetica', 'bold');
-            doc.setFontSize(11 * scale);
+            doc.setFontSize(12 * scale);
             doc.setTextColor(15, 23, 42);
             doc.text(section.title.toUpperCase(), margin, y);
-            y += 4 * scale;
+            y += 4.5 * scale;
             doc.setDrawColor(200, 200, 200);
-            doc.setLineWidth(0.2 * scale);
+            doc.setLineWidth(0.3 * scale);
             doc.line(margin, y, pageWidth - margin, y);
-            y += 4 * scale;
+            y += 5 * scale;
 
             if (section.items && section.items.length > 0) {
               section.items.forEach((item) => {
-                // Title + Subtitle (left), Date (right)
+                // Item header: title + subtitle (left) and date (right)
                 doc.setFont('helvetica', 'bold');
-                doc.setFontSize(9 * scale);
+                doc.setFontSize(10 * scale);
                 doc.setTextColor(15, 23, 42);
                 let headerText = item.title;
                 if (item.subtitle) headerText += ` — ${item.subtitle}`;
-                const headerWidth = doc.getTextWidth(headerText);
                 const dateText = item.date || '';
+                // Measure to decide if date fits on same line
+                const headerWidth = doc.getTextWidth(headerText);
                 const dateWidth = doc.getTextWidth(dateText);
-                if (headerWidth + dateWidth + 4 < usableWidth) {
+                if (headerWidth + dateWidth + 6 < usableWidth) {
                   doc.text(headerText, margin, y);
                   if (dateText) {
                     doc.text(dateText, pageWidth - margin, y, { align: 'right' });
                   }
-                  y += 4.5 * scale;
+                  y += 5 * scale;
                 } else {
                   doc.text(headerText, margin, y);
-                  y += 4.5 * scale;
+                  y += 5 * scale;
                   if (dateText) {
                     doc.setFont('helvetica', 'italic');
-                    doc.setFontSize(8 * scale);
-                    doc.setTextColor(100, 116, 139);
+                    doc.setFontSize(8.5 * scale);
+                    doc.setTextColor(100, 116, 139); // slate-500
                     doc.text(dateText, margin, y);
-                    y += 4 * scale;
+                    y += 4.5 * scale;
                   }
                 }
 
+                // Description
                 if (item.description) {
                   doc.setFont('helvetica', 'normal');
-                  doc.setFontSize(8 * scale);
+                  doc.setFontSize(8.5 * scale);
                   doc.setTextColor(71, 85, 105);
                   const descLines = doc.splitTextToSize(item.description, usableWidth);
                   descLines.forEach((line: string) => {
                     doc.text(line, margin, y);
-                    y += 3.8 * scale;
+                    y += 4.2 * scale;
                   });
                 }
 
+                // Highlights (bullets)
                 if (item.highlights) {
                   doc.setFont('helvetica', 'normal');
-                  doc.setFontSize(8 * scale);
+                  doc.setFontSize(8.5 * scale);
                   doc.setTextColor(71, 85, 105);
                   const bullets = item.highlights.split('\n').filter((b: string) => b.trim());
                   bullets.forEach((bullet: string) => {
                     const trimmed = bullet.replace(/^[•\s\-*]+/, '').trim();
                     if (!trimmed) return;
-                    const bulletLines = doc.splitTextToSize(`• ${trimmed}`, usableWidth - 4);
+                    const bulletLines = doc.splitTextToSize(`• ${trimmed}`, usableWidth - 5);
                     bulletLines.forEach((line: string) => {
                       doc.text(line, margin + 4, y);
-                      y += 3.6 * scale;
+                      y += 4 * scale;
                     });
                   });
                 }
 
-                y += 2 * scale;
+                // Skills tags (if any)
+                if (item.skills) {
+                  const skillArray = item.skills.split(',').map(s => s.trim()).filter(Boolean);
+                  if (skillArray.length > 0) {
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(7.5 * scale);
+                    doc.setTextColor(51, 65, 85);
+                    const skillLine = skillArray.join('  •  ');
+                    const wrappedSkills = doc.splitTextToSize(skillLine, usableWidth);
+                    wrappedSkills.forEach((line: string) => {
+                      doc.text(line, margin, y);
+                      y += 4 * scale;
+                    });
+                  }
+                }
+
+                y += 2 * scale; // spacing between items
               });
             }
           });
         }
 
-        // ---- Languages & References ----
+        // ---- Languages & References (side‑by‑side) ----
         if ((languages && languages.length > 0) || (references && references.length > 0)) {
           y += 4 * scale;
           doc.setFont('helvetica', 'bold');
-          doc.setFontSize(11 * scale);
+          doc.setFontSize(12 * scale);
           doc.setTextColor(15, 23, 42);
           doc.text('ADDITIONAL', margin, y);
-          y += 4 * scale;
+          y += 4.5 * scale;
           doc.setDrawColor(200, 200, 200);
-          doc.setLineWidth(0.2 * scale);
+          doc.setLineWidth(0.3 * scale);
           doc.line(margin, y, pageWidth - margin, y);
-          y += 4 * scale;
+          y += 5 * scale;
 
           const colWidth = usableWidth / 2 - 4;
           let leftY = y;
@@ -209,36 +224,36 @@ const CV: React.FC = () => {
 
           if (languages && languages.length > 0) {
             doc.setFont('helvetica', 'bold');
-            doc.setFontSize(9 * scale);
+            doc.setFontSize(10 * scale);
             doc.setTextColor(15, 23, 42);
             doc.text('Languages', margin, leftY);
-            leftY += 4 * scale;
+            leftY += 5 * scale;
             doc.setFont('helvetica', 'normal');
-            doc.setFontSize(8 * scale);
+            doc.setFontSize(8.5 * scale);
             doc.setTextColor(71, 85, 105);
             languages.forEach((lang) => {
               doc.text(`${lang.name} — ${lang.level}`, margin, leftY);
-              leftY += 3.8 * scale;
+              leftY += 4.2 * scale;
             });
           }
 
           if (references && references.length > 0) {
             const refX = margin + colWidth + 8;
             doc.setFont('helvetica', 'bold');
-            doc.setFontSize(9 * scale);
+            doc.setFontSize(10 * scale);
             doc.setTextColor(15, 23, 42);
             doc.text('References', refX, rightY);
-            rightY += 4 * scale;
+            rightY += 5 * scale;
             doc.setFont('helvetica', 'normal');
-            doc.setFontSize(8 * scale);
+            doc.setFontSize(8.5 * scale);
             doc.setTextColor(71, 85, 105);
             references.forEach((ref) => {
               doc.text(ref.name, refX, rightY);
-              rightY += 3.8 * scale;
+              rightY += 4.2 * scale;
               doc.text(`${ref.position} — ${ref.company}`, refX, rightY);
-              rightY += 3.8 * scale;
+              rightY += 4.2 * scale;
               doc.text(ref.contact, refX, rightY);
-              rightY += 3.8 * scale;
+              rightY += 4.2 * scale;
             });
           }
 
@@ -248,6 +263,7 @@ const CV: React.FC = () => {
         return { doc, endY: y, margin };
       };
 
+      // ---- Auto‑scale to fit one page ----
       const measure = buildPDF(1.0);
       const totalHeight = measure.endY;
       const pageHeight = 297;
@@ -257,16 +273,16 @@ const CV: React.FC = () => {
       let scale = 1.0;
       if (totalHeight > availableHeight) {
         scale = availableHeight / totalHeight;
-        if (scale < 0.55) scale = 0.55;
+        if (scale < 0.55) scale = 0.55; // keep minimum readability
       }
 
       const final = buildPDF(scale);
       const fileName = (personalInfo.name || 'cv').toLowerCase().replace(/\s+/g, '_');
       final.doc.save(`${fileName}_cv.pdf`);
-      toast.success('CV exported as single page!');
+      toast.success('CV exported as a single, beautiful page!');
     } catch (err) {
       console.error(err);
-      toast.error('PDF export failed. Use Print > Save as PDF instead.');
+      toast.error('PDF export failed. Please use the Print option instead.');
     }
   };
 
@@ -275,7 +291,7 @@ const CV: React.FC = () => {
     setTimeout(() => window.print(), 500);
   };
 
-  // -------- Enhanced Screen Render --------
+  // -------- Screen Render (unchanged, already enhanced) --------
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6 print:p-0 print:m-0">
       {/* Toolbar */}
@@ -305,12 +321,12 @@ const CV: React.FC = () => {
         </div>
       </div>
 
-      {/* CV Content */}
+      {/* CV Content – same as before, perfectly styled */}
       <div
         id="printable-cv"
         className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 sm:p-12 print:border-none print:p-0 print:shadow-none shadow-lg"
       >
-        {/* Header: Name & Title */}
+        {/* Header */}
         <div className="pb-6 border-b border-slate-200 dark:border-slate-700">
           <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             {personalInfo.name}
@@ -326,30 +342,19 @@ const CV: React.FC = () => {
                 </span>
               )}
               {personalInfo.phone && (
-                <a
-                  href={`tel:${personalInfo.phone}`}
-                  className="flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                >
+                <a href={`tel:${personalInfo.phone}`} className="flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                   <Phone size={14} className="text-slate-400 dark:text-slate-500" />
                   <span>{personalInfo.phone}</span>
                 </a>
               )}
               {personalInfo.email && (
-                <a
-                  href={`mailto:${personalInfo.email}`}
-                  className="flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                >
+                <a href={`mailto:${personalInfo.email}`} className="flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                   <Mail size={14} className="text-slate-400 dark:text-slate-500" />
                   <span>{personalInfo.email}</span>
                 </a>
               )}
               {personalInfo.website && (
-                <a
-                  href={personalInfo.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                >
+                <a href={personalInfo.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                   <Globe size={14} className="text-slate-400 dark:text-slate-500" />
                   <span>{personalInfo.website.replace(/^https?:\/\//i, '')}</span>
                 </a>
@@ -382,7 +387,7 @@ const CV: React.FC = () => {
           </div>
         )}
 
-        {/* Sections (Experience, Education, etc.) */}
+        {/* Sections */}
         {sections && sections.length > 0 && (
           <div className="py-6 space-y-8">
             {sections.map((section) => (
