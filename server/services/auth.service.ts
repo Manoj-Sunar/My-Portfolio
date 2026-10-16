@@ -11,31 +11,42 @@ import { sendOTPEmail } from '../utils/emailService.js';
 const JWT_SECRET = process.env.JWT_SECRET || 'portfolio-jwt-secret-key-18349';
 
 export class AuthService {
+ 
   public async login(email: string, password: string) {
-    const db = loadDB();
-    const admin = db.admin;
-    
-    if (admin.email.toLowerCase() !== email.toLowerCase()) {
-      throw new AppError('Invalid email or password combination.', 401);
-    }
+  const db = loadDB();
+  const admin = db.admin;
 
-    const isMatch = bcrypt.compareSync(password, admin.passwordHash);
-    if (!isMatch) {
-      throw new AppError('Invalid email or password combination.', 401);
-    }
-
-    // Generate Bearer Authorization Token
-    const token = jwt.sign(
-      { email: admin.email, name: admin.name },
-      JWT_SECRET,
-      { expiresIn: '7d' }
-    );
-
-    logActivity(`Admin logged in successfully: ${admin.name}`);
-
-    const { passwordHash, resetPasswordToken, resetPasswordExpire, resetPasswordOTP, resetPasswordOTPExpires, ...adminPublic } = admin;
-    return { token, admin: adminPublic };
+  if (admin.email.toLowerCase() !== email.toLowerCase()) {
+    throw new AppError('Invalid email or password combination.', 401);
   }
+
+  const isMatch = bcrypt.compareSync(password, admin.passwordHash);
+  if (!isMatch) {
+    throw new AppError('Invalid email or password combination.', 401);
+  }
+
+  // Generate Bearer Authorization Token
+  const token = jwt.sign(
+    { email: admin.email, name: admin.name },
+    JWT_SECRET,
+    { expiresIn: '7d' }
+  );
+
+  logActivity(`Admin logged in successfully: ${admin.name}`);
+
+  const {
+    passwordHash,
+    resetPasswordToken,
+    resetPasswordExpire,
+    resetPasswordOTP,
+    resetPasswordOTPExpires,
+    ...adminPublic
+  } = admin;
+
+  // Return token to controller — it will be placed in a cookie,
+  // NOT in the JSON response body.
+  return { token, admin: adminPublic };
+}
 
   public getAdminProfile() {
     const db = loadDB();
@@ -86,7 +97,7 @@ export class AuthService {
 
     const salt = bcrypt.genSaltSync(10);
     admin.passwordHash = bcrypt.hashSync(next, salt);
-    
+
     db.admin = admin;
     saveDB(db);
 
@@ -108,7 +119,7 @@ export class AuthService {
 
     admin.resetPasswordOTP = otp;
     admin.resetPasswordOTPExpires = new Date(expireTime).toISOString();
-    
+
     db.admin = admin;
     saveDB(db);
 
@@ -151,7 +162,7 @@ export class AuthService {
 
     admin.resetPasswordOTP = null;
     admin.resetPasswordOTPExpires = null;
-    
+
     db.admin = admin;
     saveDB(db);
 
@@ -179,7 +190,7 @@ export class AuthService {
 
     db.admin = admin;
     saveDB(db);
-    
+
     logActivity('Admin password reset successfully via dual MFA/OTP verification.');
     return true;
   }

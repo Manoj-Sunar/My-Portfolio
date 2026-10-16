@@ -185,12 +185,12 @@
       "title": "Church Website ( Headless CMS or a Decoupled CMS )",
       "description": "Light to the Nations Emanuel Church Platform is a state-of-the-art, fully dynamic web application built to serve as the digital sanctuary for a vibrant faith community. This comprehensive platform empowers church leadership with complete content control while delivering an inspiring, SEO-optimized experience for visitors seeking spiritual growth, community connection, and online giving opportunities.",
       "image": {
-        "url": "https://res.cloudinary.com/manojadmin/image/upload/v1781867932/portfolio/qbz2j2s2lyhbwibpzjua.jpg",
-        "publicId": "portfolio/qbz2j2s2lyhbwibpzjua"
+        "url": "https://res.cloudinary.com/manojadmin/image/upload/v1790572684/portfolio/ewb4o89anhtqdiuh7ozx.png",
+        "publicId": "portfolio/ewb4o89anhtqdiuh7ozx"
       },
       "technologies": [],
-      "liveUrl": "",
-      "githubUrl": "https://github.com/Manoj-Sunar/church-web",
+      "liveUrl": "https://church-web-ebon.vercel.app/",
+      "githubUrl": "",
       "category": "Web Applications",
       "featured": false,
       "order": 9
@@ -217,6 +217,27 @@
       "category": "Web Applications",
       "featured": false,
       "order": 10
+    },
+    {
+      "id": "1787812734182",
+      "title": "Bulk Audio Generation Powered By ElevenLabs and Google AI Studio Text to Speech",
+      "description": "Transform your video production workflow. Bulk Audio Generator uses ElevenLabs and Google Gemini AI to create 100+ perfectly timed voice clips from your scripts in seconds. No more manual syncing. No more wasted hours. Just perfect audio, ready for editing.",
+      "image": {
+        "url": "https://res.cloudinary.com/manojadmin/image/upload/v1790573055/portfolio/zkbxulaxhbxqesskcecl.png",
+        "publicId": "portfolio/zkbxulaxhbxqesskcecl"
+      },
+      "technologies": [
+        "Next JS",
+        "TypeScript",
+        "Javascript",
+        "Tailwind Css",
+        "FastApi"
+      ],
+      "liveUrl": "https://bulk-audio-generator.vercel.app/",
+      "githubUrl": "",
+      "category": "Web Applications",
+      "featured": false,
+      "order": 11
     }
   ],
   "education": [
@@ -233,50 +254,7 @@
       "order": 1
     }
   ],
-  "certificates": [
-    {
-      "id": "cert_1782116283283",
-      "title": "Internship Completion",
-      "issuer": "Lumino Technology Pvt. Ltd.",
-      "issueDate": "2025-03-27",
-      "expiryDate": "",
-      "credentialId": "",
-      "credentialUrl": "",
-      "image": {
-        "url": "https://res.cloudinary.com/manojadmin/image/upload/v1782116145/portfolio/brx6glbdu1uiqndxbkij.jpg",
-        "publicId": "portfolio/brx6glbdu1uiqndxbkij"
-      },
-      "order": 3
-    },
-    {
-      "id": "cert_1782116432855",
-      "title": "Frontend Web Development Workshop",
-      "issuer": "MacIT Hub",
-      "issueDate": "2022-10-22",
-      "expiryDate": "",
-      "credentialId": "",
-      "credentialUrl": "",
-      "image": {
-        "url": "https://res.cloudinary.com/manojadmin/image/upload/v1782116306/portfolio/t2msfojarm2q4kaeutkd.jpg",
-        "publicId": "portfolio/t2msfojarm2q4kaeutkd"
-      },
-      "order": 4
-    },
-    {
-      "id": "cert_1784709058710",
-      "title": "Bsc CsIT Transcript",
-      "issuer": "Tribhuvan University",
-      "issueDate": "2026-03-22",
-      "expiryDate": "",
-      "credentialId": "",
-      "credentialUrl": "",
-      "image": {
-        "url": "https://res.cloudinary.com/manojadmin/image/upload/v1784708989/portfolio/oxzbbchwlflbsv7zhc3e.jpg",
-        "publicId": "portfolio/oxzbbchwlflbsv7zhc3e"
-      },
-      "order": 5
-    }
-  ],
+  "certificates": [],
   "about": {
     "title": "Hi, I am Manoj Sunar",
     "content": "I build web applications that don't just work they empower. As a MERN Stack Developer, I specialize in creating content manageable platforms with intuitive admin panels, secure authentication, and optimized performance. From financial apps to AI platforms, I've delivered production-ready solutions in every project I've touched. My latest creation? A complete church management system where non-technical staff can manage sermons, events, and ministries effortlessly. I believe technology should serve people, not complicate their lives.",
@@ -344,7 +322,7 @@
       "email": "kumar980062begin@gmail.com",
       "phone": "9764617689",
       "address": "Pokhara / Kathmandau, Nepal",
-      "website": "https://github.com/Manoj-Sunar",
+      "website": "https://manoj-portfolio-7psg.onrender.com/",
       "title": "Full Stack Software Engineer | React.js | Next.js | Node.js | NestJS | TypeScript | MongoDB | Redis | Docker",
       "summary": "Full Stack Software Engineer with experience developing scalable web applications using React.js, Next.js, Node.js, Express.js, NestJS, TypeScript, MongoDB, Redis, Docker, and REST APIs. Experienced in CMS platforms, authentication systems, performance optimization, and responsive UI development. Passionate about building secure, production-ready applications and solving real-world business problems."
     },
@@ -425,7 +403,7 @@
             "description": "Light to the Nations Emanuel Church Platform is a state-of-the-art, fully dynamic web application built to serve as the digital sanctuary for a vibrant faith community. This comprehensive platform empowers church leadership with complete content control while delivering an inspiring, SEO-optimized experience for visitors seeking spiritual growth, community connection, and online giving opportunities.",
             "skills": "Next JS, Nest JS, javascript, typescript, Mongodb Atlas, Redis for caching, react query for server state management, tailwind css, Docker",
             "githubUrl": "",
-            "websiteUrl": "",
+            "websiteUrl": "https://church-web-ebon.vercel.app/",
             "highlights": ""
           },
           {
@@ -437,6 +415,16 @@
             "githubUrl": "https://github.com/Manoj-Sunar/My-Portfolio",
             "websiteUrl": "https://manoj-portfolio-7psg.onrender.com/",
             "highlights": ". Dual database persistence with automatic MongoDB and local JSON file synchronization, plus intelligent failover.\n Multi-layer caching with Redis and in-memory fallback, featuring pattern-based instant cache invalidation.\nTwo-factor password recovery with OTP verification via email for enterprise-grade security.\nComplete Headless CMS with full CRUD operations for managing projects, education, certificates, about sections, and CV/resume content dynamically."
+          },
+          {
+            "title": "Bulk Audio Generator / Full Stack Developer",
+            "subtitle": "",
+            "date": "",
+            "description": "AI-Powered Bulk Audio Generation Platform\nBuilt a full-stack AI audio generation platform using FastAPI, Next.js, and PostgreSQL, integrated with ElevenLabs and Google AI Studio APIs. Users can securely provide their API keys, paste scripts separated by double line breaks, and generate 100+ voice/audio clips in bulk with automated processing and storage.",
+            "skills": "Fastapi,NextJS,PostgresSql",
+            "githubUrl": "",
+            "websiteUrl": "https://bulk-audio-generator.vercel.app/",
+            "highlights": "Bulk AI Audio Generation — Generate 100+ voice clips from multiple scripts.\nMulti-Provider AI Integration — Powered by ElevenLabs and Google AI Studio APIs.\nScript-to-Voice Automation — Automatically splits scripts and generates individual audio clips.\nFull-Stack Architecture — Built with FastAPI, Next.js, and PostgreSQL."
           }
         ]
       }
@@ -517,6 +505,26 @@
     "template": "modern"
   },
   "recentActivity": [
+    "[16/10/2026, 16:41:34] Admin logged in successfully: Manoj Sunar",
+    "[16/10/2026, 11:52:56] Admin logged in successfully: Manoj Sunar",
+    "[16/10/2026, 11:51:33] Admin logged in successfully: Manoj Sunar",
+    "[16/10/2026, 11:37:20] Admin logged in successfully: Manoj Sunar",
+    "[16/10/2026, 11:31:42] Admin logged in successfully: Manoj Sunar",
+    "[9/28/2026, 5:31:32 AM] CV content and styling template updated.",
+    "[9/28/2026, 5:31:04 AM] CV content and styling template updated.",
+    "[9/28/2026, 5:24:56 AM] Updated project: \"Bulk Audio Generation Powered By ElevenLabs and Google AI Studio Text to Speech\"",
+    "[9/28/2026, 5:24:55 AM] Updated project: \"Bulk Audio Generation Powered By ElevenLabs and Google AI Studio Text to Speech\"",
+    "[9/28/2026, 5:18:41 AM] Updated project: \"Church Website ( Headless CMS or a Decoupled CMS )\"",
+    "[9/28/2026, 5:18:07 AM] Updated project: \"Church Website ( Headless CMS or a Decoupled CMS )\"",
+    "[9/28/2026, 5:17:35 AM] Admin logged in successfully: Manoj Sunar",
+    "[9/23/2026, 6:50:22 AM] Deleted certificate record: \"Bsc CsIT Transcript\"",
+    "[9/23/2026, 6:50:19 AM] Deleted certificate record: \"Internship Completion\"",
+    "[9/23/2026, 6:50:16 AM] Deleted certificate record: \"Frontend Web Development Workshop\"",
+    "[9/23/2026, 6:50:07 AM] Admin logged in successfully: Manoj Sunar",
+    "[8/27/2026, 6:38:54 AM] Created project: \"Bulk Audio Generation Powered By ElevenLabs and Google AI Studio Text to Speech\"",
+    "[8/27/2026, 6:31:03 AM] Admin logged in successfully: Manoj Sunar",
+    "[8/20/2026, 2:29:46 AM] CV content and styling template updated.",
+    "[8/20/2026, 2:25:54 AM] Admin logged in successfully: Manoj Sunar",
     "[7/29/2026, 7:57:45 AM] CV content and styling template updated.",
     "[7/29/2026, 7:57:44 AM] CV content and styling template updated.",
     "[7/29/2026, 7:57:43 AM] CV content and styling template updated.",
@@ -526,26 +534,6 @@
     "[7/29/2026, 7:51:19 AM] Admin logged in successfully: Manoj Sunar",
     "[7/22/2026, 8:30:58 AM] Uploaded/created certificate: \"Bsc CsIT Transcript\" (issued by Tribhuvan University)",
     "[7/22/2026, 6:17:02 AM] Deleted certificate record: \"B.Sc CSIT Marksheet\"",
-    "[7/22/2026, 6:16:58 AM] Deleted certificate record: \"B.Sc CSIT Marksheet\"",
-    "[7/22/2026, 6:16:33 AM] Admin logged in successfully: Manoj Sunar",
-    "[7/7/2026, 12:47:53 PM] Admin logged in successfully: Manoj Sunar",
-    "[6/30/2026, 4:21:56 AM] Updated project: \"Footsal Booking System\"",
-    "[6/28/2026, 4:52:23 PM] Portfolio projects display list reordered.",
-    "[6/28/2026, 4:52:21 PM] Portfolio projects display list reordered.",
-    "[6/28/2026, 4:52:21 PM] Portfolio projects display list reordered.",
-    "[6/28/2026, 4:52:19 PM] Portfolio projects display list reordered.",
-    "[6/25/2026, 2:43:20 PM] CV content and styling template updated.",
-    "[6/25/2026, 2:41:17 PM] Updated project: \"Portfolio Site ( CMS )\"",
-    "[6/25/2026, 2:32:28 PM] Admin logged in successfully: Manoj Sunar",
-    "[24/06/2026, 19:18:47] CV content and styling template updated.",
-    "[24/06/2026, 19:18:41] CV content and styling template updated.",
-    "[24/06/2026, 19:17:59] CV content and styling template updated.",
-    "[24/06/2026, 19:17:51] CV content and styling template updated.",
-    "[24/06/2026, 19:02:20] Created project: \"Portfolio Site ( CMS )\"",
-    "[6/24/2026, 12:58:24 PM] Admin logged in successfully: Manoj Sunar",
-    "[22/06/2026, 18:45:53] Deleted project: \"QR Based Food Order\"",
-    "[22/06/2026, 18:45:27] Created project: \"QR Based Food Order\"",
-    "[22/06/2026, 18:44:23] Admin logged in successfully: Manoj Sunar",
-    "[6/22/2026, 8:20:56 AM] Updated certificate record: \"Internship Completion\""
+    "[7/22/2026, 6:16:58 AM] Deleted certificate record: \"B.Sc CSIT Marksheet\""
   ]
 }
