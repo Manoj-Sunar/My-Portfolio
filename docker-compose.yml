@@ -29,29 +29,10 @@ services:
       - EMAIL_USER=${EMAIL_USER}
       - EMAIL_PASS=${EMAIL_PASS}
       - JWT_SECRET=${JWT_SECRET}
-      - APP_URL=http://localhost:3000
     env_file:
       - ./server/.env
     depends_on:
       - redis
-    # REMOVE THE VOLUMES SECTION COMPLETELY
-    restart: unless-stopped
-
-  client:
-    build:
-      context: ./client
-      dockerfile: Dockerfile
-    container_name: manoj-portfolio
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=development
-      - VITE_API_URL=http://localhost:5000/api
-    env_file:
-      - ./client/.env.local
-    depends_on:
-      - server
-    # REMOVE THE VOLUMES SECTION COMPLETELY
     restart: unless-stopped
 
 volumes:

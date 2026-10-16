@@ -37,34 +37,8 @@ services:
         sync: false
       - key: JWT_SECRET
         sync: false
-      - key: APP_URL
-        fromService:
-          name: manoj-portfolio
-          type: web
-          property: host
       - key: REDIS_URL
         fromService:
           name: portfolio-redis
           type: redis
           property: connectionString
-
-  # Client Service - Using Docker
-  - type: web
-    name: manoj-portfolio
-    runtime: docker
-    repo: https://github.com/Manoj-Sunar/My-Portfolio # Replace with your repo
-    plan: free
-    dockerfilePath: ./client/Dockerfile
-    dockerContext: ./client
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: VITE_API_URL
-        fromService:
-          name: portfolio-server
-          type: web
-          property: host
-          # This will set VITE_API_URL to the server's URL + /api
-    buildCommand: |
-      # Build the client with production environment
-      cd client && npm install && VITE_API_URL=/api npm run build
