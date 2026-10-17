@@ -1,3 +1,4 @@
+// cv.routes.ts
 import { Router } from 'express';
 import { cvController } from '../controllers/cv.controller.js';
 import { authMiddleware } from '../middleware/auth.js';
@@ -8,7 +9,5 @@ const cvRoutes = Router();
 
 cvRoutes.get('/', cvController.getCV);
 cvRoutes.patch('/', authMiddleware, validate(updateCVDtoRules), cvController.updateCV);
-cvRoutes.post('/reset-theme', authMiddleware, cvController.resetTheme);
-cvRoutes.post('/record-download', cvController.recordDownload); // public — counts client-side PDF generation
 
 export default cvRoutes;
