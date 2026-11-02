@@ -1,21 +1,22 @@
-"use client";
-
-
+// src/app/(public)/about/page.tsx
+import type { Metadata } from "next";
 import { AboutSection } from "@/components/public/AboutSection";
 import { SkillsSection } from "@/components/public/SkillSection";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useAbout } from "@/hook/useAbout";
+import { getAbout } from "@/lib/server-data";
 
+export const revalidate = 300;
+export const metadata: Metadata = {
+  title: "About",
+  description: "Full Stack Software Engineer in Pokhara, Nepal. Background, skills, and approach to building production software.",
+  alternates: { canonical: "/about" },
+};
 
-
-export default function AboutPage() {
-  const { data, isLoading } = useAbout();
-  if (isLoading) return <div className="section-padding container-custom"><Skeleton className="h-96 w-full" /></div>;
-  if (!data) return null;
+export default async function AboutPage() {
+  const about = await getAbout();
   return (
-    <>
-      <AboutSection about={data} />
-      <SkillsSection skills={data.skills} />
-    </>
+    <main>
+      <AboutSection about={about} />
+      <SkillsSection skills={about.skills} />
+    </main>
   );
 }

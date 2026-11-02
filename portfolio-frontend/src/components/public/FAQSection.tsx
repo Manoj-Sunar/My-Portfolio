@@ -3,30 +3,20 @@ import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const faqs = [
-  {
-    q: "What technologies do you work with?",
-    a: "React, Next.js, TypeScript, Node.js, Express, NestJS, MongoDB, PostgreSQL, Redis, Docker and Tailwind CSS.",
-  },
-  {
-    q: "Are you available for freelance or full-time roles?",
-    a: "Yes — I'm open to both remote full-time positions and freelance projects.",
-  },
-  {
-    q: "How do you handle deployment?",
-    a: "I deploy to Vercel, Render, AWS and Dockerized environments with CI/CD pipelines.",
-  },
-  {
-    q: "Do you handle both frontend and backend?",
-    a: "Absolutely — full-stack delivery including API design, database modelling, auth, caching and deployment.",
-  },
+export type FAQItem = { q: string; a: string };
+
+const defaultFaqs: FAQItem[] = [
+  { q: "What technologies do you work with?", a: "React, Next.js, TypeScript, Node.js, NestJS, PostgreSQL, MongoDB, Docker." },
+  { q: "Are you available for freelance?", a: "Yes — open to remote full-time and freelance." },
+  { q: "How do you handle deployment?", a: "Vercel, Render, AWS, and Docker with CI/CD pipelines." },
+  { q: "Frontend and backend?", a: "Full-stack delivery including API design, auth, caching, and deployment." },
 ];
 
-export function FAQSection() {
+export function FAQSection({ items = defaultFaqs }: { items?: FAQItem[] }) {
   const [open, setOpen] = useState<number | null>(0);
-
   return (
-    <section className="section-padding bg-card/30">
+   
+ <section className="section-padding bg-card/30">
       <div className="container-custom max-w-3xl">
         <div className="text-center mb-12">
           <span className="text-sm font-medium text-primary mb-2 block">
@@ -38,7 +28,7 @@ export function FAQSection() {
         </div>
 
         <div className="space-y-4">
-          {faqs.map((f, i) => (
+          {defaultFaqs.map((f, i) => (
             <div key={i} className="glass rounded-2xl overflow-hidden">
               <button
                 onClick={() => setOpen(open === i ? null : i)}
@@ -72,3 +62,6 @@ export function FAQSection() {
     </section>
   );
 }
+
+
+

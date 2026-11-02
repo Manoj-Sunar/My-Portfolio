@@ -1,11 +1,16 @@
-"use client";
+// src/app/(public)/certificates/page.tsx
+import type { Metadata } from "next";
+import { CertificatesSection } from "@/components/public/CertificationSection";
+import { getCertificates } from "@/lib/server-data";
 
-import { CertificatesSection } from "@/components/public/CertificateSection";
-import { useCertificates } from "@/hook/useCertificates";
+export const revalidate = 300;
+export const metadata: Metadata = {
+  title: "Certificates",
+  description: "Verified credentials and certifications earned by Manoj Sunar.",
+  alternates: { canonical: "/certificates" },
+};
 
-
-export default function CertificatesPage() {
-  const { data, isLoading } = useCertificates();
-  if (isLoading) return <div className="section-padding container-custom">Loading...</div>;
-  return <CertificatesSection certificates={data ?? []} />;
+export default async function CertificatesPage() {
+  const certificates = await getCertificates();
+  return <main><CertificatesSection certificates={certificates} /></main>;
 }

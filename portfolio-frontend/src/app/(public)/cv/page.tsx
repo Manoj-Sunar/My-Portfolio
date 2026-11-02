@@ -1,13 +1,16 @@
-"use client";
-
-
+// src/app/(public)/cv/page.tsx
+import type { Metadata } from "next";
 import { CVSection } from "@/components/public/CVSection";
-import { useCV } from "@/hook/useCV";
+import { getCV } from "@/lib/server-data";
 
+export const revalidate = 300;
+export const metadata: Metadata = {
+  title: "Resume",
+  description: "Download or view the CV of Manoj Sunar — Full Stack Software Engineer.",
+  alternates: { canonical: "/cv" },
+};
 
-export default function CVPage() {
-  const { data, isLoading } = useCV();
-  if (isLoading) return <div className="section-padding container-custom">Loading...</div>;
-  if (!data) return null;
-  return <CVSection cv={data} />;
+export default async function CVPage() {
+  const cv = await getCV();
+  return <main><CVSection cv={cv} /></main>;
 }

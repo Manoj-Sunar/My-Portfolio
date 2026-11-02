@@ -1,11 +1,16 @@
-"use client";
-
+// src/app/(public)/education/page.tsx
+import type { Metadata } from "next";
 import { EducationSection } from "@/components/public/EducationSection";
-import { useEducation } from "@/hook/useEducation";
+import { getEducation } from "@/lib/server-data";
 
+export const revalidate = 300;
+export const metadata: Metadata = {
+  title: "Education",
+  description: "Academic background and qualifications of Manoj Sunar.",
+  alternates: { canonical: "/education" },
+};
 
-export default function EducationPage() {
-  const { data, isLoading } = useEducation();
-  if (isLoading) return <div className="section-padding container-custom">Loading...</div>;
-  return <EducationSection education={data ?? []} />;
+export default async function EducationPage() {
+  const education = await getEducation();
+  return <main className="section-padding"><EducationSection education={education} /></main>;
 }
