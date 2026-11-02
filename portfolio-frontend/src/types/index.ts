@@ -13,6 +13,7 @@ export type ProjectType = {
   // ADD THESE:
   slug?: string;
   updatedAt?: string;
+  featured?: boolean;
 };
 
 export interface EducationType {
