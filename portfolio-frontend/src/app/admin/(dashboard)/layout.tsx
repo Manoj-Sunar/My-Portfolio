@@ -4,11 +4,22 @@ import { AdminSidebar } from "@/components/admin/Sidebar";
 import { useAuth } from "@/hook/useAuth";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { QueryProvider } from "@/providers/query-provider";
+import { QueryProvider } from "@/providers/query-provider"; // 👈 1. Import Provider
 
+// 👈 2. Tell Next.js to skip static generation for all dashboard pages
 export const dynamic = "force-dynamic";
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+// 👈 3. Rename the original component to a wrapper
+export default function AdminDashboardLayoutWrapper({ children }: { children: React.ReactNode }) {
+  return (
+    <QueryProvider>
+      <AdminLayoutContent>{children}</AdminLayoutContent>
+    </QueryProvider>
+  );
+}
+
+// 👈 4. Keep your original logic here (no changes needed inside)
+function AdminLayoutContent({ children }: { children: React.ReactNode }) {
   const { data: admin, isLoading, error } = useAuth();
   const router = useRouter();
 
@@ -28,11 +39,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (!admin) return null;
 
   return (
-    <QueryProvider> {/* 👈 wrap here */}
-      <div className="flex min-h-screen bg-background">
-        <AdminSidebar admin={admin} />
-        <main className="flex-1 p-6 lg:p-8 overflow-x-hidden">{children}</main>
-      </div>
-    </QueryProvider>
+    <div className="flex min-h-screen bg-background">
+      <AdminSidebar admin={admin} />
+      <main className="flex-1 p-6 lg:p-8 overflow-x-hidden">{children}</main>
+    </div>
   );
 }
