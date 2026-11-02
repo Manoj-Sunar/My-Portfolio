@@ -1,10 +1,19 @@
 export interface ImageAsset { url: string; publicId: string; }
 
-export interface ProjectType {
-  id: string; title: string; description: string; image: ImageAsset;
-  technologies: string[]; liveUrl?: string; githubUrl?: string;
-  category: string; featured: boolean; order: number;
-}
+export type ProjectType = {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  technologies?: string[];
+  image?: { url: string } | null;
+  liveUrl?: string | null;
+  githubUrl?: string | null;
+
+  // ADD THESE:
+  slug?: string;
+  updatedAt?: string;
+};
 
 export interface EducationType {
   id: string; institution: string; degree: string; field: string;
