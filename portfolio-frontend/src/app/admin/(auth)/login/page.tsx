@@ -2,7 +2,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,13 +11,28 @@ import { useState } from "react";
 import Link from "next/link";
 import { useForgotPassword, useLogin, useResetPassword, useVerifyOTP } from "@/hook/useAuth";
 
+// 1. Import the Provider
+import { QueryProvider } from "@/providers/query-provider"; 
+
+export const dynamic = "force-dynamic";
+
 const loginSchema = z.object({
   email: z.string().email("Valid email required"),
   password: z.string().min(1, "Password required"),
 });
 type LoginForm = z.infer<typeof loginSchema>;
 
-export default function AdminLoginPage() {
+// 2. Rename the default export to a wrapper
+export default function AdminLoginPageWrapper() {
+  return (
+    <QueryProvider>
+      <AdminLoginPage />
+    </QueryProvider>
+  );
+}
+
+// 3. Your original component goes here (no changes needed inside)
+function AdminLoginPage() {
   const router = useRouter();
   const [mode, setMode] = useState<"login" | "forgot" | "otp" | "reset">("login");
   const [resetToken, setResetToken] = useState("");

@@ -35,7 +35,7 @@ export const env = {
   JWT_SECRET,
   JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || '7d',
 
-  CLIENT_ORIGINS: (process.env.CLIENT_ORIGINS || 'http://localhost:3000,http://localhost:5173')
+  CLIENT_ORIGINS: (process.env.CLIENT_ORIGINS || 'http://localhost:3000,http://localhost:5173',"https://manojkami.com.np")
     .split(',')
     .map((o) => o.trim())
     .filter(Boolean),
