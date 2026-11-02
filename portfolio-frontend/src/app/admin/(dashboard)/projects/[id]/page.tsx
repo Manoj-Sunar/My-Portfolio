@@ -67,9 +67,13 @@ export default function ProjectFormPage() {
         technologies: existing.technologies?.join(", ") ?? "",
         liveUrl: existing.liveUrl ?? "",
         githubUrl: existing.githubUrl ?? "",
-        featured: existing.featured,
+        featured: existing.featured ?? false,
       });
-      setImage(existing.image ?? { url: "", publicId: "" });
+
+      setImage({
+        url:image?.url ?? "",
+        publicId:image?.publicId??"",
+      });
     }
   }, [existing, form]);
 
