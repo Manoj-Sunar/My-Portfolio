@@ -101,11 +101,13 @@ export default function AdminProjectsPage() {
                     <Pencil className="h-4 w-4" />
                   </Link>
                   <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <button className="p-2 rounded-lg hover:bg-destructive/10 text-destructive">
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </AlertDialogTrigger>
+                    <AlertDialogTrigger
+                      render={
+                        <button className="p-2 rounded-lg hover:bg-destructive/10 text-destructive">
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      }
+                    />
                     <AlertDialogContent>
                       <AlertDialogHeader>
                         <AlertDialogTitle>Delete project?</AlertDialogTitle>
